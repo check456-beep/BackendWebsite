@@ -1,0 +1,46 @@
+{
+  "id": "section-2",
+  "title": "Implementing Polynomial Regression with NumPy",
+  "content": "Polynomial regression extends linear regression by fitting a polynomial equation to the data. This allows the model to capture non-linear relationships between variables by adding polynomial terms to the linear equation.",
+  "code": "import numpy as np\nimport matplotlib.pyplot as plt\nfrom sklearn.preprocessing import PolynomialFeatures\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.pipeline import make_pipeline\n\n# Generate non-linear sample data\nnp.random.seed(42)\nX = 6 * np.random.rand(100, 1) - 3\ny = 0.5 * X**2 + X + 2 + np.random.randn(100, 1) * 0.5\n\n# Create and visualize the raw data\nplt.figure(figsize=(10, 6))\nplt.scatter(X, y, alpha=0.7)\nplt.title('Non-linear Data for Polynomial Regression')\nplt.xlabel('X')\nplt.ylabel('y')\nplt.grid(True, alpha=0.3)\n\n# Compare different polynomial degrees\ndegrees = [1, 2, 4]\nX_test = np.linspace(-3, 3, 100).reshape(-1, 1)\n\nplt.figure(figsize=(14, 8))\nplt.scatter(X, y, alpha=0.7, label='Training data')\n\nfor degree in degrees:\n    # Create a polynomial regression model\n    model = make_pipeline(\n        PolynomialFeatures(degree=degree),\n        LinearRegression()\n    )\n    \n    # Train the model\n    model.fit(X, y)\n    \n    # Make predictions on test data\n    y_pred = model.predict(X_test)\n    \n    # Plot the polynomial curve\n    plt.plot(X_test, y_pred, label=f'Degree {degree}')\n\nplt.title('Polynomial Regression with Different Degrees')\nplt.xlabel('X')\nplt.ylabel('y')\nplt.legend()\nplt.grid(True, alpha=0.3)\nplt.ylim(-2, 10)\nplt.show()\n\nprint(\"Polynomial regression models generated!\")",
+  "tasks": [
+    {
+      "id": "task-1",
+      "description": "Run the code to generate and visualize polynomial regression models",
+      "hint": "Click the 'Run Code' button to execute the provided code",
+      "validation": "Polynomial regression models generated!"
+    },
+    {
+      "id": "task-2",
+      "description": "Change the degree list to include degree 3",
+      "hint": "Modify the 'degrees' list to include 3, e.g., degrees = [1, 2, 3, 4]",
+      "validation": "degrees = [1, 2, 3, 4]"
+    },
+    {
+      "id": "task-3",
+      "description": "Increase the complexity of the generated data by changing the equation",
+      "hint": "Try modifying the equation that generates y, e.g., y = 0.5 * X**3 + X + 2 + np.random.randn(100, 1) * 0.5",
+      "validation": "X**3"
+    }
+  ],
+  "tools": [
+    {
+      "name": "sklearn.preprocessing.PolynomialFeatures",
+      "description": "Generates polynomial features from input data",
+      "syntax": "PolynomialFeatures(degree=2, interaction_only=False, include_bias=True)",
+      "link": "https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html"
+    },
+    {
+      "name": "sklearn.pipeline.make_pipeline",
+      "description": "Creates a pipeline of sequential transformers and estimators",
+      "syntax": "make_pipeline(*steps)",
+      "link": "https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.make_pipeline.html"
+    },
+    {
+      "name": "numpy.linspace",
+      "description": "Creates evenly spaced numbers over a specified interval",
+      "syntax": "numpy.linspace(start, stop, num=50)",
+      "link": "https://numpy.org/doc/stable/reference/generated/numpy.linspace.html"
+    }
+  ]
+} 

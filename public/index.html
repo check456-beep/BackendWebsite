@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python Scientific IDE</title>
+    <title>Python Data Science Tutorial Platform</title>
     <!-- CodeMirror CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/theme/monokai.min.css">
@@ -11,106 +11,480 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/addon/dialog/dialog.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/addon/lint/lint.min.css">
     <style>
-        body {
-            font-family: monospace;
+        :root {
+            /* Monokai Theme Colors */
+            --bg-dark: #272822;
+            --bg-darker: #1e1f1c;
+            --text-light: #f8f8f2;
+            --accent-blue: #66d9ef;
+            --accent-green: #a6e22e;
+            --accent-pink: #f92672;
+            --accent-purple: #ae81ff;
+            --accent-orange: #fd971f;
+            --border-color: #3e3d32;
+        }
+        
+        * {
+            box-sizing: border-box;
             margin: 0;
-            padding: 10px;
+            padding: 0;
         }
-        .container {
-            width: 100%;
+        
+        body {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background-color: var(--bg-darker);
+            color: var(--text-light);
+            overflow: hidden;
+            height: 100vh;
         }
+        
         .header {
+            background-color: var(--bg-dark);
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
-            padding: 5px;
-            margin-bottom: 10px;
+            align-items: center;
+            height: 60px;
         }
-        .editor-container {
+        
+        .title {
+            font-size: 1.2rem;
+            color: var(--accent-blue);
+        }
+        
+        .main-container {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+        
+        /* Left Sidebar - Tasks Panel */
+        .tasks-panel {
+            width: 300px;
+            background-color: var(--bg-dark);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            transition: width 0.3s ease;
+        }
+        
+        .tasks-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: bold;
+        }
+        
+        .task-list {
+            list-style: none;
+        }
+        
+        .task-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .task-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .task-item.completed {
+            color: var(--accent-green);
+        }
+        
+        .task-item.completed::before {
+            content: '✓ ';
+            color: var(--accent-green);
+        }
+        
+        .hint-btn {
+            background-color: transparent;
+            border: 1px solid var(--accent-orange);
+            color: var(--accent-orange);
+            padding: 4px 8px;
+            margin-top: 8px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+        
+        .hint-btn:hover {
+            background-color: rgba(253, 151, 31, 0.2);
+        }
+        
+        .hint-text {
+            display: none;
+            margin-top: 8px;
+            padding: 8px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-left: 3px solid var(--accent-orange);
+            font-size: 0.9rem;
+        }
+        
+        /* Main Content - Code Editor */
+        .editor-panel {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            height: 90vh;
-        }
-        .editor-area {
-            flex: 3;
-            margin-bottom: 10px;
-        }
-        .CodeMirror {
-            width: 100%;
             height: 100%;
-            font-family: monospace;
+            overflow: hidden;
+        }
+        
+        .section-title {
+            padding: 15px;
+            background-color: var(--bg-dark);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: bold;
+            color: var(--accent-blue);
+        }
+        
+        .editor-container {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .CodeMirror {
+            height: 100%;
             font-size: 14px;
         }
+        
         .output-container {
-            flex: 2;
+            height: 30%;
+            background-color: var(--bg-darker);
+            border-top: 1px solid var(--border-color);
+            overflow: auto;
             display: flex;
             flex-direction: column;
+            transition: height 0.3s ease;
         }
+        
         .output-header {
+            padding: 10px;
+            background-color: var(--bg-dark);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
-            padding: 5px;
+            align-items: center;
         }
+        
         .output {
             flex: 1;
             overflow: auto;
+            padding: 15px;
             white-space: pre-wrap;
             font-family: monospace;
-            border: 1px solid #ccc;
-            padding: 5px;
-            min-height: 100px;
         }
-        .input-container {
+        
+        .output img {
+            max-width: 100%;
+            margin: 10px 0;
+        }
+        
+        .controls {
             display: flex;
-            padding: 5px;
-            margin-top: 10px;
+            padding: 10px;
+            background-color: var(--bg-dark);
+            border-top: 1px solid var(--border-color);
         }
-        .user-input-box {
+        
+        .btn {
+            padding: 8px 15px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .run-btn {
+            background-color: var(--accent-green);
+            color: #000;
+        }
+        
+        .run-btn:hover {
+            background-color: #c1ff4d;
+        }
+        
+        .next-btn {
+            background-color: var(--accent-blue);
+            color: #000;
+        }
+        
+        .next-btn:hover {
+            background-color: #8ce6ff;
+        }
+        
+        .restart-btn {
+            background-color: var(--accent-pink);
+            color: #fff;
+        }
+        
+        .restart-btn:hover {
+            background-color: #ff5a97;
+        }
+        
+        .progress-bar {
+            height: 5px;
+            width: 100%;
+            background-color: var(--border-color);
+            margin: 0 0 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--accent-green);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        /* Right Sidebar - Tools Reference */
+        .tools-panel {
+            width: 300px;
+            background-color: var(--bg-dark);
+            border-left: 1px solid var(--border-color);
+            overflow-y: auto;
+            transition: width 0.3s ease;
+        }
+        
+        .tools-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: bold;
+        }
+        
+        .tools-search {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 8px;
+            background-color: var(--bg-darker);
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            border-radius: 3px;
+        }
+        
+        .tools-filter {
+            display: flex;
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .filter-btn {
             flex: 1;
-            margin-right: 5px;
+            padding: 8px;
+            background-color: var(--bg-darker);
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            cursor: pointer;
+        }
+        
+        .filter-btn.active {
+            background-color: var(--accent-blue);
+            color: #000;
+            border-color: var(--accent-blue);
+        }
+        
+        .tool-list {
+            list-style: none;
+        }
+        
+        .tool-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .tool-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .tool-name {
+            color: var(--accent-blue);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .tool-description {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .tool-syntax {
+            font-family: monospace;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .tool-link {
+            color: var(--accent-green);
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+        
+        .tool-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Status bar */
+        .status-bar {
+            padding: 5px 10px;
+            background-color: var(--bg-darker);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            height: 25px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .tasks-panel, .tools-panel {
+                width: 250px;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .tasks-panel, .tools-panel {
+                width: 100%;
+                height: 300px;
+                border-right: none;
+                border-left: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .editor-panel {
+                height: auto;
+                flex: 1;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                height: auto;
+                padding: 10px;
+            }
+            
+            .title {
+                margin-bottom: 10px;
+            }
+            
+            .controls {
+                flex-wrap: wrap;
+            }
+            
+            .btn {
+                margin-bottom: 5px;
+            }
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-darker);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-blue);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1 class="title">Python Scientific Web IDE</h1>
-            <div style="display: flex; align-items: center;">
-                <span class="status" id="status"></span>
-                <button id="run-btn" class="run-btn">Run Code</button>
-            </div>
+    <div class="header">
+        <div class="title">Python Data Science Tutorial Platform</div>
+        <div id="status">Python</div>
+    </div>
+    
+    <div class="main-container">
+        <!-- Left Sidebar - Tasks Panel -->
+        <div class="tasks-panel">
+            <div class="tasks-header">Tasks</div>
+            <ul class="task-list" id="task-list">
+                <!-- Tasks will be loaded dynamically -->
+            </ul>
         </div>
-        <div class="editor-container">
-            <div class="editor-area">
-                <textarea id="code-editor" spellcheck="false">import numpy as np
-import matplotlib.pyplot as plt
-
-# Generate some data
-x = np.linspace(0, 10, 100)
-y = np.sin(x)
-
-# Create a plot
-plt.figure(figsize=(8, 4))
-plt.plot(x, y, 'b-', linewidth=2, label='sin(x)')
-plt.title('Simple Sine Wave')
-plt.xlabel('x')
-plt.ylabel('sin(x)')
-plt.grid(True)
-plt.legend()
-plt.show()
-
-print("Plot generated successfully!")</textarea>
+        
+        <!-- Main Content - Code Editor -->
+        <div class="editor-panel">
+            <div class="section-title" id="section-title">Loading section...</div>
+            
+            <div class="editor-container">
+                <textarea id="code-editor" spellcheck="false"></textarea>
             </div>
+            
             <div class="output-container">
                 <div class="output-header">
                     <span>Output</span>
-                    <button class="clear-btn" id="clear-output">Clear</button>
+                    <button class="btn" id="clear-output">Clear</button>
                 </div>
                 <div class="output" id="output-area">Output will appear here...</div>
-                <div class="input-container">
-                    <input type="text" id="user-input" placeholder="Type your input here..." class="user-input-box" />
-                    <button id="send-input" class="send-btn">Send</button>
-                </div>
             </div>
+            
+            <div class="controls">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <button class="btn restart-btn" id="restart-section">Restart Section</button>
+                <button class="btn run-btn" id="run-btn">Run Code</button>
+                <button class="btn next-btn" id="next-section">Next Section</button>
+            </div>
+            
+            <div class="status-bar">
+                <span>Python</span>
+                <span id="execution-time"></span>
+            </div>
+        </div>
+        
+        <!-- Right Sidebar - Tools Reference -->
+        <div class="tools-panel">
+            <div class="tools-header">Tools Reference</div>
+            
+            <div class="tools-search">
+                <input type="text" id="tools-search" class="search-input" placeholder="Search tools...">
+            </div>
+            
+            <div class="tools-filter">
+                <button class="filter-btn active" data-filter="libraries">Libraries</button>
+                <button class="filter-btn" data-filter="methods">Methods</button>
+            </div>
+            
+            <ul class="tool-list" id="tool-list">
+                <!-- Tools will be loaded dynamically -->
+            </ul>
         </div>
     </div>
 
@@ -125,21 +499,11 @@ print("Plot generated successfully!")</textarea>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/addon/search/searchcursor.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/addon/dialog/dialog.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/addon/lint/lint.min.js"></script>
-    <script src="https://unpkg.com/jshint@2.13.5/dist/jshint.js"></script>
-    <script src="https://unpkg.com/jsonlint@1.6.3/web/jsonlint.js"></script>
-    <script src="https://unpkg.com/pylint-browser@0.1.0/dist/pylint-browser.min.js"></script>
-
+    
     <script>
-        // Setup editor and execution handling
         document.addEventListener('DOMContentLoaded', function() {
-            // Track execution state
-            let isExecuting = false;
-            let currentProcessId = null;
-            let wsConnection = null;
-            
             // Initialize CodeMirror
-            const codeEditorElem = document.getElementById('code-editor');
-            const editor = CodeMirror.fromTextArea(codeEditorElem, {
+            const editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
                 mode: 'python',
                 theme: 'monokai',
                 lineNumbers: true,
@@ -154,212 +518,259 @@ print("Plot generated successfully!")</textarea>
                     "Ctrl-Space": "autocomplete",
                     "Ctrl-F": "findPersistent",
                     "Ctrl-Enter": function(cm) {
-                        if (!isExecuting) {
-                            runBtn.click();
-                        }
+                        document.getElementById('run-btn').click();
                     },
                     "Tab": function(cm) {
                         const spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
                         cm.replaceSelection(spaces);
                     }
-                },
-                gutters: ["CodeMirror-lint-markers"],
-                lint: true
-            });
-            
-            // Create custom hints for common Python scientific libraries
-            const pythonHints = {
-                'np': ['array', 'zeros', 'ones', 'linspace', 'arange', 'sin', 'cos', 'tan', 'exp', 'log', 'random'],
-                'plt': ['figure', 'plot', 'scatter', 'bar', 'hist', 'title', 'xlabel', 'ylabel', 'legend', 'show', 'grid', 'savefig'],
-                'pd': ['DataFrame', 'Series', 'read_csv', 'read_excel', 'concat', 'merge', 'groupby'],
-                'sklearn': ['model_selection', 'preprocessing', 'linear_model', 'metrics', 'cluster']
-            };
-            
-            // Custom autocomplete for Python scientific libraries
-            CodeMirror.registerHelper("hint", "python", function(editor) {
-                const cursor = editor.getCursor();
-                const line = editor.getLine(cursor.line);
-                const token = editor.getTokenAt(cursor);
-                
-                // Check if typing after a dot
-                const dotMatch = line.slice(0, cursor.ch).match(/(\w+)\.\w*$/);
-                if (dotMatch) {
-                    const prefix = dotMatch[1];
-                    const methods = pythonHints[prefix] || [];
-                    
-                    const start = {line: cursor.line, ch: cursor.ch - token.string.length};
-                    const end = {line: cursor.line, ch: cursor.ch};
-                    
-                    return {
-                        list: methods.filter(m => m.startsWith(token.string)),
-                        from: start,
-                        to: end
-                    };
                 }
-                
-                // Default Python autocomplete
-                return CodeMirror.hint.python(editor);
             });
             
-            const runBtn = document.getElementById('run-btn');
+            // Track execution state
+            let isExecuting = false;
+            let currentTutorial = null;
+            let currentSection = null;
+            let completedTasks = new Set();
+            
+            // Reference to DOM elements
+            const sectionTitle = document.getElementById('section-title');
             const outputArea = document.getElementById('output-area');
-            const status = document.getElementById('status');
-            const userInput = document.getElementById('user-input');
-            const sendInputBtn = document.getElementById('send-input');
+            const taskList = document.getElementById('task-list');
+            const toolList = document.getElementById('tool-list');
+            const progressFill = document.getElementById('progress-fill');
+            const runBtn = document.getElementById('run-btn');
+            const nextSectionBtn = document.getElementById('next-section');
+            const restartSectionBtn = document.getElementById('restart-section');
+            const clearOutputBtn = document.getElementById('clear-output');
+            const toolSearch = document.getElementById('tools-search');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const executionTime = document.getElementById('execution-time');
             
-            // Initialize WebSocket connection
-            function initWebSocket() {
-                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-                const wsUrl = `${protocol}//${window.location.host}`;
-                
-                wsConnection = new WebSocket(wsUrl);
-                
-                wsConnection.onopen = function() {
-                    console.log('WebSocket connection established');
-                };
-                
-                wsConnection.onmessage = function(event) {
-                    try {
-                        const message = JSON.parse(event.data);
-                        
-                        if (message.type === 'output') {
-                            appendToOutput(message.data);
-                        } else if (message.type === 'error') {
-                            appendToOutput(message.data, true);
-                        } else if (message.type === 'completed') {
-                            isExecuting = false;
-                            runBtn.disabled = false;
-                        }
-                    } catch (error) {
-                        console.error('Error processing WebSocket message:', error);
+            // Load tutorial data
+            async function loadTutorial(tutorialId) {
+                try {
+                    const response = await fetch(`/api/tutorials/${tutorialId}`);
+                    const tutorialData = await response.json();
+                    currentTutorial = tutorialData;
+                    
+                    // Load first section by default
+                    if (tutorialData.sections && tutorialData.sections.length > 0) {
+                        loadSection(tutorialData.sections[0].id);
                     }
-                };
-                
-                wsConnection.onclose = function() {
-                    console.log('WebSocket connection closed');
-                    // Try to reconnect after a delay
-                    setTimeout(initWebSocket, 3000);
-                };
-                
-                wsConnection.onerror = function(error) {
-                    console.error('WebSocket error:', error);
-                };
+                    
+                    updateProgress();
+                } catch (error) {
+                    console.error('Error loading tutorial:', error);
+                    outputArea.innerHTML = 'Failed to load tutorial data.';
+                }
             }
             
-            // Initialize WebSocket
-            initWebSocket();
-            
-            // Append content to output area
-            function appendToOutput(content, isError = false) {
-                const span = document.createElement('span');
-                span.textContent = content;
-                if (isError) {
-                    span.style.color = '#e74c3c';
+            // Load a specific section
+            async function loadSection(sectionId) {
+                try {
+                    const response = await fetch(`/api/tutorials/section/${sectionId}`);
+                    const sectionData = await response.json();
+                    currentSection = sectionData;
+                    
+                    // Update UI with section data
+                    sectionTitle.textContent = sectionData.title;
+                    editor.setValue(sectionData.code || '');
+                    
+                    // Load tasks
+                    taskList.innerHTML = '';
+                    if (sectionData.tasks && sectionData.tasks.length > 0) {
+                        sectionData.tasks.forEach(task => {
+                            const isCompleted = completedTasks.has(task.id);
+                            
+                            const taskItem = document.createElement('li');
+                            taskItem.className = `task-item ${isCompleted ? 'completed' : ''}`;
+                            taskItem.innerHTML = `
+                                <div class="task-description">${task.description}</div>
+                                <button class="hint-btn">Show Hint</button>
+                                <div class="hint-text">${task.hint}</div>
+                            `;
+                            taskList.appendChild(taskItem);
+                            
+                            // Toggle hint visibility
+                            const hintBtn = taskItem.querySelector('.hint-btn');
+                            const hintText = taskItem.querySelector('.hint-text');
+                            
+                            hintBtn.addEventListener('click', () => {
+                                const isVisible = hintText.style.display === 'block';
+                                hintText.style.display = isVisible ? 'none' : 'block';
+                                hintBtn.textContent = isVisible ? 'Show Hint' : 'Hide Hint';
+                            });
+                        });
+                    }
+                    
+                    // Load tools
+                    toolList.innerHTML = '';
+                    if (sectionData.tools && sectionData.tools.length > 0) {
+                        sectionData.tools.forEach(tool => {
+                            const toolItem = document.createElement('li');
+                            toolItem.className = 'tool-item fade-in';
+                            toolItem.innerHTML = `
+                                <div class="tool-name">${tool.name}</div>
+                                <div class="tool-description">${tool.description}</div>
+                                <div class="tool-syntax">${tool.syntax}</div>
+                                <a href="${tool.link}" target="_blank" class="tool-link">Documentation</a>
+                            `;
+                            toolList.appendChild(toolItem);
+                        });
+                    }
+                    
+                    // Clear output
+                    outputArea.innerHTML = 'Output will appear here...';
+                    
+                    updateProgress();
+                } catch (error) {
+                    console.error('Error loading section:', error);
+                    outputArea.innerHTML = 'Failed to load section data.';
                 }
-                outputArea.appendChild(span);
-                
-                // Auto-scroll to bottom
-                outputArea.scrollTop = outputArea.scrollHeight;
             }
             
-            // Send input to the Python process
-            function sendInput() {
-                if (!currentProcessId || !wsConnection || wsConnection.readyState !== WebSocket.OPEN) {
-                    appendToOutput('No active process to receive input.\n', true);
-                    return;
-                }
-                
-                const input = userInput.value;
-                if (!input.trim()) return;
-                
-                // Display the input in the output area
-                appendToOutput(`> ${input}\n`);
-                
-                // Send to WebSocket
-                wsConnection.send(JSON.stringify({
-                    type: 'input',
-                    processId: currentProcessId,
-                    data: input
-                }));
-                
-                // Clear the input field
-                userInput.value = '';
-            }
-            
-            // Send input button click
-            sendInputBtn.addEventListener('click', sendInput);
-            
-            // Input field key press
-            userInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    sendInput();
-                    e.preventDefault();
-                }
-            });
-
-            // Run button click event
-            runBtn.addEventListener('click', function() {
+            // Run code
+            async function runCode() {
                 if (isExecuting) return;
                 
-                // Get code from CodeMirror
                 const code = editor.getValue();
-                if (!code.trim()) {
-                    outputArea.textContent = 'No code to execute. Please enter some Python code.';
-                    return;
-                }
+                if (!code.trim()) return;
                 
-                // Set executing state
                 isExecuting = true;
-                runBtn.disabled = true;
-                outputArea.textContent = 'Running code...\n';
-                status.textContent = 'Executing...';
+                runBtn.textContent = 'Running...';
+                outputArea.innerHTML = 'Executing code...';
                 
-                // Start execution timer
-                const startTime = Date.now();
-                
-                fetch('/api/execute', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ code: code })
-                })
-                .then(function(response) {
-                    if (!response.ok) {
-                        throw new Error('Server error: ' + response.status);
-                    }
-                    return response.json();
-                })
-                .then(function(data) {
-                    const executionTime = data.executionTime || ((Date.now() - startTime) / 1000).toFixed(2);
+                try {
+                    const startTime = Date.now();
                     
-                    // Store the process ID for input handling
-                    currentProcessId = data.processId;
+                    const response = await fetch('/api/execute', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ code })
+                    });
                     
-                    // Register with WebSocket
-                    if (wsConnection && wsConnection.readyState === WebSocket.OPEN && currentProcessId) {
-                        wsConnection.send(JSON.stringify({
-                            type: 'register',
-                            processId: currentProcessId
-                        }));
-                    }
+                    const data = await response.json();
                     
+                    // Display results
                     outputArea.innerHTML = data.output || 'No output';
-                    status.textContent = 'Completed in ' + executionTime + 's';
-                })
-                .catch(function(error) {
-                    outputArea.textContent = 'Error: ' + error.message;
-                    status.textContent = 'Failed';
+                    
+                    // Update execution time
+                    const executionSeconds = data.executionTime || ((Date.now() - startTime) / 1000);
+                    executionTime.textContent = `Execution time: ${executionSeconds.toFixed(2)}s`;
+                    
+                    // Check if tasks are completed
+                    checkTaskCompletion(data.output);
+                    
+                } catch (error) {
+                    console.error('Error executing code:', error);
+                    outputArea.innerHTML = 'Error executing code. Please try again.';
+                } finally {
                     isExecuting = false;
-                    runBtn.disabled = false;
+                    runBtn.textContent = 'Run Code';
+                }
+            }
+            
+            // Check if tasks are completed based on output
+            function checkTaskCompletion(output) {
+                if (!currentSection || !currentSection.tasks) return;
+                
+                let allCompleted = true;
+                
+                currentSection.tasks.forEach((task, index) => {
+                    const taskElement = taskList.children[index];
+                    
+                    if (task.validation && (
+                        output.includes(task.validation) || 
+                        editor.getValue().includes(task.validation)
+                    )) {
+                        completedTasks.add(task.id);
+                        taskElement.classList.add('completed');
+                    } else {
+                        allCompleted = false;
+                    }
+                });
+                
+                // Update progress
+                updateProgress();
+                
+                // If all tasks are completed, enable next section button
+                nextSectionBtn.disabled = !allCompleted;
+            }
+            
+            // Update progress bar
+            function updateProgress() {
+                if (!currentTutorial || !currentSection) return;
+                
+                // Calculate completion percentage
+                const totalTasks = currentSection.tasks ? currentSection.tasks.length : 0;
+                const completedCount = [...completedTasks].filter(id => 
+                    currentSection.tasks.some(task => task.id === id)
+                ).length;
+                
+                const percentage = totalTasks > 0 ? (completedCount / totalTasks) * 100 : 0;
+                progressFill.style.width = `${percentage}%`;
+            }
+            
+            // Filter tools
+            function filterTools(filter) {
+                // Implement tool filtering logic here
+                filterBtns.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.filter === filter);
+                });
+            }
+            
+            // Event listeners
+            runBtn.addEventListener('click', runCode);
+            
+            clearOutputBtn.addEventListener('click', () => {
+                outputArea.innerHTML = 'Output cleared';
+            });
+            
+            nextSectionBtn.addEventListener('click', () => {
+                // Implement next section logic
+                if (!currentTutorial || !currentSection) return;
+                
+                const sectionIndex = currentTutorial.sections.findIndex(s => s.id === currentSection.id);
+                if (sectionIndex < currentTutorial.sections.length - 1) {
+                    loadSection(currentTutorial.sections[sectionIndex + 1].id);
+                }
+            });
+            
+            restartSectionBtn.addEventListener('click', () => {
+                if (currentSection) {
+                    // Reset just this section
+                    currentSection.tasks.forEach(task => {
+                        completedTasks.delete(task.id);
+                    });
+                    loadSection(currentSection.id);
+                }
+            });
+            
+            toolSearch.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const toolItems = toolList.querySelectorAll('.tool-item');
+                
+                toolItems.forEach(item => {
+                    const toolName = item.querySelector('.tool-name').textContent.toLowerCase();
+                    const toolDesc = item.querySelector('.tool-description').textContent.toLowerCase();
+                    
+                    if (toolName.includes(searchTerm) || toolDesc.includes(searchTerm)) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
                 });
             });
-
-            // Clear output button
-            document.getElementById('clear-output').addEventListener('click', function() {
-                outputArea.textContent = 'Output will appear here...';
-                status.textContent = '';
+            
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterTools(btn.dataset.filter);
+                });
             });
+            
+            // Initial load - Linear Regression tutorial
+            loadTutorial('linear-regression');
         });
     </script>
 </body>

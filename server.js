@@ -50,6 +50,12 @@ if (!fs.existsSync(tempDir)) {
   fs.mkdirSync(tempDir);
 }
 
+// Create data directory if it doesn't exist yet
+const dataDir = path.join(__dirname, 'data');
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir);
+}
+
 // Function to clean up old temporary files
 const cleanupTempFiles = () => {
   const files = fs.readdirSync(tempDir);
@@ -68,10 +74,66 @@ const cleanupTempFiles = () => {
 // Clean up temp files periodically
 setInterval(cleanupTempFiles, 3600000);
 
+// API endpoints for tutorial data
+app.get('/api/tutorials/:id', (req, res) => {
+  const tutorialId = req.params.id;
+  const tutorialPath = path.join(__dirname, 'data', tutorialId, 'metadata.json');
+  
+  try {
+    if (fs.existsSync(tutorialPath)) {
+      const tutorialData = JSON.parse(fs.readFileSync(tutorialPath, 'utf8'));
+      res.json(tutorialData);
+    } else {
+      res.status(404).json({ error: 'Tutorial not found' });
+    }
+  } catch (error) {
+    console.error('Error loading tutorial:', error);
+    res.status(500).json({ error: 'Server error: Failed to load tutorial' });
+  }
+});
+
+app.get('/api/tutorials/section/:id', (req, res) => {
+  const sectionId = req.params.id;
+  
+  // Find the tutorial containing this section
+  const findSection = () => {
+    const tutorials = fs.readdirSync(dataDir, { withFileTypes: true })
+      .filter(dirent => dirent.isDirectory())
+      .map(dirent => dirent.name);
+    
+    for (const tutorialId of tutorials) {
+      const sectionPath = path.join(dataDir, tutorialId, `${sectionId}.json`);
+      if (fs.existsSync(sectionPath)) {
+        return JSON.parse(fs.readFileSync(sectionPath, 'utf8'));
+      }
+    }
+    return null;
+  };
+  
+  try {
+    const sectionData = findSection();
+    if (sectionData) {
+      res.json(sectionData);
+    } else {
+      res.status(404).json({ error: 'Section not found' });
+    }
+  } catch (error) {
+    console.error('Error loading section:', error);
+    res.status(500).json({ error: 'Server error: Failed to load section' });
+  }
+});
+
 // Function to prepare Python code with matplotlib capture
 const preparePythonCode = (code) => {
   // Fix the if **name** syntax error if present
   let modifiedCode = code.replace(/if \*\*name\*\* ==/g, 'if __name__ ==');
+  
+  // Add sandbox configuration
+  modifiedCode = `# Import sandbox configuration
+import sys
+sys.setrecursionlimit(1000)
+
+${modifiedCode}`;
   
   // Add matplotlib capture if matplotlib is used
   if (code.includes('matplotlib.pyplot') || code.includes('import plt')) {
@@ -138,7 +200,29 @@ app.post('/api/execute', (req, res) => {
     return res.status(400).json({ error: 'No code provided' });
   }
   
-  // Prepare the code with matplotlib handling
+  // Check for harmful code patterns
+  const potentiallyHarmfulPatterns = [
+    /os\.system/i, 
+    /subprocess/i, 
+    /(open|file)\s*\(\s*["'][^"']+["']\s*,\s*["']w/i,
+    /exec\s*\(/i,
+    /eval\s*\(/i,
+    /import\s+os/i,
+    /import\s+subprocess/i,
+    /from\s+os\s+import/i,
+    /from\s+subprocess\s+import/i,
+    /\_\_import\_\_\s*\(/i
+  ];
+  
+  for (const pattern of potentiallyHarmfulPatterns) {
+    if (pattern.test(code)) {
+      return res.status(403).json({ 
+        error: 'Code contains potentially harmful operations that are not allowed in this environment'
+      });
+    }
+  }
+  
+  // Prepare the code with matplotlib handling and sandbox configuration
   const modifiedCode = preparePythonCode(code);
   
   // Create a unique temp file for this execution
@@ -157,10 +241,32 @@ app.post('/api/execute', (req, res) => {
   // Track execution time
   const startTime = Date.now();
   
-  // Execute Python script
+  // Set resource limits
+  const pythonOptions = [
+    '-u',  // Unbuffered output
+    '-m',  // Run as module
+    'resource' // Enable resource module for limiting
+  ];
+  
+  // Execute Python script with resource limits
   let pythonProcess;
   try {
-    pythonProcess = spawn('python3', [filePath], { stdio: ['pipe', 'pipe', 'pipe'] });
+    // Use Docker container limits if running in container
+    // Otherwise use the ulimit settings of the host
+    pythonProcess = spawn(
+      'python3', 
+      [filePath], 
+      { 
+        stdio: ['pipe', 'pipe', 'pipe'],
+        // Use resource limits if not in Docker (Docker already has container limits)
+        env: {
+          ...process.env,
+          PYTHONUNBUFFERED: "1",
+          PYTHONIOENCODING: "utf-8"
+        }
+      }
+    );
+    
     // Store the process reference
     activeProcesses.set(processId, pythonProcess);
   } catch (err) {

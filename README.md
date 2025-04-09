@@ -1,116 +1,86 @@
-# Python Scientific Web IDE with Express
+# Python Data Science Tutorial Platform
 
-This project provides a web-based Python IDE designed specifically for scientific computing and data visualization, using Express.js (Node.js) as the backend server.
+An interactive web-based platform for learning data science and machine learning concepts through hands-on Python coding exercises.
+
+## Overview
+
+This platform provides step-by-step tutorials with interactive code editing, execution, and visualization capabilities focused on Python programming for data analysis. The application runs Python code in a secure sandbox environment and visualizes results directly in the browser.
 
 ## Features
 
-- Node.js/Express backend with Python execution capabilities
-- Support for scientific libraries (NumPy, Matplotlib, scikit-learn, pandas)
-- Real-time plotting with Matplotlib
-- Code editor with syntax highlighting
-- Execution time tracking
-- Responsive design
+- **Interactive Code Editor**: Syntax highlighting, code completion, and error checking
+- **In-browser Code Execution**: Run Python code without local installation
+- **Real-time Visualization**: Matplotlib plots render directly in the browser
+- **Guided Tutorials**: Step-by-step instructions with progression tracking
+- **Reference Tools**: Quick access to API documentation for data science libraries
+- **Responsive Design**: Works on desktop and mobile devices
 
-## Directory Structure
+## Installation
+
+### Prerequisites
+
+- Node.js (v16+)
+- Python 3.9+
+- Docker (optional, for containerized deployment)
+
+### Docker Deployment
+
+For a containerized deployment with all dependencies:
 
 ```
-python-scientific-ide/
-│
-├── server.js                   # Express server implementation
-├── package.json                # Node.js dependencies
-├── Dockerfile                  # Docker configuration with Node.js and Python
-├── public/                     # Static web assets
-│   └── index.html              # Web interface
-└── temp/                       # Temporary directory for Python scripts (created at runtime)
+docker build -t python-tutorial-platform .
+docker run -p 5000:5000 python-tutorial-platform
 ```
+Access the platform at http://localhost:5000
 
-## Setup Instructions
+## Tutorial Structure
 
-### Using Docker (Recommended)
+The platform currently includes the following tutorials:
 
-1. **Create the project directory structure**
-   ```bash
-   mkdir -p python-scientific-ide/public
-   cd python-scientific-ide
-   ```
+### Linear Regression
+- **Section 1**: Understanding Linear Regression
+- **Section 2**: Implementing Polynomial Regression with NumPy
+- **Section 3**: Evaluating Regression Models
 
-2. **Create the required files**
-   - Create `package.json`, `server.js`, `Dockerfile`, and `public/index.html` with the provided code
+Each tutorial section includes:
+- Explanatory content
+- Sample code
+- Interactive tasks
+- Reference tools
+- Validation criteria
 
-3. **Build the Docker image**
-   ```bash
-   docker build -t python-scientific-express .
-   ```
+## Development
 
-4. **Run the Docker container**
-   ```bash
-   docker run -p 5000:5000 python-scientific-express
-   ```
+### Directory Structure
 
-5. **Access the application**
-   Open your browser and navigate to `http://localhost:5000`
+- `/public`: Frontend assets and HTML
+- `/data`: Tutorial content in JSON format
+- `/temp`: Temporary Python script storage
+- `server.js`: Express backend server
+- `Dockerfile`: Container configuration
 
-### Manual Setup (without Docker)
+### Adding New Tutorials
 
-1. **Install Node.js and npm**
+1. Create a new directory under `/data` with a unique tutorial ID
+2. Create a `metadata.json` file with tutorial information
+3. Add section files in JSON format (see existing tutorials for examples)
 
-2. **Install Python and required packages**
-   ```bash
-   pip install numpy matplotlib scikit-learn pandas scipy
-   ```
+## Technologies Used
 
-3. **Create the project directory structure as above**
+- **Frontend**: HTML, CSS, JavaScript, CodeMirror
+- **Backend**: Node.js, Express
+- **Python Execution**: Child process with sandboxing
+- **Data Science Libraries**: NumPy, Matplotlib, scikit-learn, Pandas
+- **Containerization**: Docker
 
-4. **Install Node.js dependencies**
-   ```bash
-   npm install
-   ```
+## Security Features
 
-5. **Start the server**
-   ```bash
-   npm start
-   ```
-
-## Running Scientific Code
-
-The IDE is optimized for running scientific Python code with the following libraries:
-
-- **NumPy** - For numerical computations
-- **Matplotlib** - For data visualization
-- **scikit-learn** - For machine learning
-- **pandas** - For data analysis
-- **SciPy** - For advanced scientific computing
-
-### Handling Polynomial Regression Code
-
-This implementation is specifically designed to handle complex polynomial regression code without modifications. It includes:
-
-- Automatic handling of matplotlib plots
-- Increased execution timeout (60 seconds)
-- Automatic syntax error fixing
-- Proper resource allocation
-
-## Key Benefits of Using Express
-
-1. **Improved Performance**: Node.js is lightweight and has excellent request handling capabilities
-2. **Non-blocking I/O**: Better handles multiple concurrent requests
-3. **Greater Scalability**: More scalable than Python-based web servers for serving web content
-4. **Rich Ecosystem**: Access to thousands of NPM packages
-5. **Simple API**: Express offers a simpler API compared to Python frameworks
-
-## Customization
-
-You can customize the Express server by modifying `server.js` to add additional routes, middleware, or features. The Python environment can be extended by adding more packages to the Dockerfile.
-
-## Security Considerations
-
-This application executes user-submitted code on the server, which poses security risks. For production use, consider implementing:
-
-- Code execution isolation (e.g., using more restrictive containers)
-- User authentication and authorization
-- Resource limits and quotas
-- Input validation and sanitization
+- Non-root user execution in Docker
+- Restricted filesystem access
+- Resource limiting
+- Harmful code pattern detection
+- Temporary file cleanup
 
 ## License
 
-MIT
+[MIT License](LICENSE)

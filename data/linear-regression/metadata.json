@@ -1,0 +1,26 @@
+{
+  "id": "linear-regression",
+  "title": "Introduction to Linear Regression",
+  "description": "Learn the fundamentals of linear regression for data analysis and prediction",
+  "difficulty": "Beginner",
+  "duration": "45 minutes",
+  "sections": [
+    {
+      "id": "section-1",
+      "title": "Understanding Linear Regression",
+      "description": "Learn the basic concepts and mathematics behind linear regression"
+    },
+    {
+      "id": "section-2",
+      "title": "Implementing Polynomial Regression with NumPy",
+      "description": "Build polynomial regression models to handle non-linear relationships in data"
+    },
+    {
+      "id": "section-3",
+      "title": "Evaluating Regression Models",
+      "description": "Learn techniques to evaluate and compare different regression models"
+    }
+  ],
+  "prerequisites": ["Basic Python knowledge", "Familiarity with arrays"],
+  "libraries": ["numpy", "matplotlib", "scikit-learn"]
+} 

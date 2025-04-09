@@ -1,0 +1,46 @@
+{
+  "id": "section-3",
+  "title": "Evaluating Regression Models",
+  "content": "After building regression models, it's important to evaluate their performance. Common metrics for regression include Mean Squared Error (MSE), Root Mean Squared Error (RMSE), and R-squared. We'll compare different regression models and visualize their performance.",
+  "code": "import numpy as np\nimport matplotlib.pyplot as plt\nfrom sklearn.preprocessing import PolynomialFeatures\nfrom sklearn.linear_model import LinearRegression, Ridge, Lasso\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.metrics import mean_squared_error, r2_score\nfrom sklearn.model_selection import train_test_split\n\n# Generate sample data with noise\nnp.random.seed(42)\nX = 6 * np.random.rand(200, 1) - 3\ny = 0.8 * X**2 + 0.5 * X + 2 + np.random.randn(200, 1) * 1.5\n\n# Split data into training and testing sets\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)\n\n# Define degrees to test\ndegrees = [1, 2, 3, 5, 10]\n\n# Create a figure for plotting results\nplt.figure(figsize=(14, 10))\n\n# Plot training data\nplt.subplot(2, 1, 1)\nplt.scatter(X_train, y_train, alpha=0.4, label='Training data')\nplt.scatter(X_test, y_test, alpha=0.4, label='Testing data', color='orange')\nplt.title('Polynomial Regression Model Comparison')\nplt.ylabel('y')\nplt.legend()\nplt.grid(True, alpha=0.3)\n\n# Compare models\nX_plot = np.linspace(-3, 3, 200).reshape(-1, 1)\nresults = []\n\nfor degree in degrees:\n    # Create a polynomial regression model\n    model = make_pipeline(\n        PolynomialFeatures(degree=degree),\n        LinearRegression()\n    )\n    \n    # Train the model\n    model.fit(X_train, y_train)\n    \n    # Make predictions\n    y_train_pred = model.predict(X_train)\n    y_test_pred = model.predict(X_test)\n    y_plot_pred = model.predict(X_plot)\n    \n    # Calculate metrics\n    train_mse = mean_squared_error(y_train, y_train_pred)\n    test_mse = mean_squared_error(y_test, y_test_pred)\n    train_r2 = r2_score(y_train, y_train_pred)\n    test_r2 = r2_score(y_test, y_test_pred)\n    \n    # Store results\n    results.append({\n        'degree': degree,\n        'train_mse': train_mse,\n        'test_mse': test_mse,\n        'train_r2': train_r2,\n        'test_r2': test_r2\n    })\n    \n    # Plot the model predictions\n    plt.plot(X_plot, y_plot_pred, label=f'Degree {degree}')\n\nplt.legend()\n\n# Plot evaluation metrics\nplt.subplot(2, 1, 2)\ndegrees_arr = np.array([r['degree'] for r in results])\ntrain_mse = np.array([r['train_mse'] for r in results])\ntest_mse = np.array([r['test_mse'] for r in results])\ntrain_r2 = np.array([r['train_r2'] for r in results])\ntest_r2 = np.array([r['test_r2'] for r in results])\n\n# Create bar chart for MSE\nplt.bar(degrees_arr - 0.2, train_mse, width=0.4, label='Train MSE', alpha=0.6)\nplt.bar(degrees_arr + 0.2, test_mse, width=0.4, label='Test MSE', alpha=0.6)\nplt.xlabel('Polynomial Degree')\nplt.ylabel('Mean Squared Error')\nplt.title('Model Performance vs Polynomial Degree')\nplt.xticks(degrees_arr)\nplt.legend()\nplt.grid(True, alpha=0.3)\n\nplt.tight_layout()\nplt.show()\n\n# Print evaluation results\nprint(\"\\nModel Evaluation Results:\")\nprint(\"-\" * 70)\nprint(f\"{'Degree':<10}{'Train MSE':<15}{'Test MSE':<15}{'Train R²':<15}{'Test R²':<15}\")\nprint(\"-\" * 70)\nfor r in results:\n    print(f\"{r['degree']:<10}{r['train_mse']:<15.4f}{r['test_mse']:<15.4f}{r['train_r2']:<15.4f}{r['test_r2']:<15.4f}\")\n\nprint(\"\\nModel evaluation complete!\")",
+  "tasks": [
+    {
+      "id": "task-1",
+      "description": "Run the code to evaluate polynomial regression models of different degrees",
+      "hint": "Click the 'Run Code' button to execute the provided code",
+      "validation": "Model evaluation complete!"
+    },
+    {
+      "id": "task-2",
+      "description": "Identify which polynomial degree is starting to overfit the data",
+      "hint": "Look at the model with degree 10 and compare its train vs test metrics",
+      "validation": "degree=10"
+    },
+    {
+      "id": "task-3",
+      "description": "Modify the code to include a Ridge regression model for one of the degrees",
+      "hint": "Replace LinearRegression() with Ridge(alpha=1.0) for one of the degrees",
+      "validation": "Ridge("
+    }
+  ],
+  "tools": [
+    {
+      "name": "sklearn.metrics.mean_squared_error",
+      "description": "Computes mean squared error between predicted and actual values",
+      "syntax": "mean_squared_error(y_true, y_pred)",
+      "link": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.mean_squared_error.html"
+    },
+    {
+      "name": "sklearn.metrics.r2_score",
+      "description": "Computes coefficient of determination (R²) to measure model fit",
+      "syntax": "r2_score(y_true, y_pred)",
+      "link": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.r2_score.html"
+    },
+    {
+      "name": "sklearn.model_selection.train_test_split",
+      "description": "Splits arrays into random train and test subsets",
+      "syntax": "train_test_split(*arrays, test_size=0.25, random_state=None)",
+      "link": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html"
+    }
+  ]
+} 

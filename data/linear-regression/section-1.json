@@ -1,0 +1,40 @@
+{
+  "id": "section-1",
+  "title": "Understanding Linear Regression",
+  "content": "Linear regression is a fundamental algorithm in machine learning used to predict a continuous value based on input features. It establishes a relationship between independent variable(s) and a dependent variable by fitting a linear equation to the data.",
+  "code": "import numpy as np\nimport matplotlib.pyplot as plt\n\n# Generate sample data\nnp.random.seed(42)\nX = 2 * np.random.rand(100, 1)\ny = 4 + 3 * X + np.random.randn(100, 1)\n\n# Plot the data\nplt.figure(figsize=(10, 6))\nplt.scatter(X, y)\nplt.xlabel('Input feature')\nplt.ylabel('Target value')\nplt.title('Sample Data for Linear Regression')\nplt.show()\n\nprint(\"Data generation complete!\")",
+  "tasks": [
+    {
+      "id": "task-1",
+      "description": "Run the code to generate sample data",
+      "hint": "Click the 'Run Code' button to execute the provided code",
+      "validation": "Data generation complete!"
+    },
+    {
+      "id": "task-2",
+      "description": "Modify the code to use a different random seed value",
+      "hint": "Change np.random.seed(42) to a different number",
+      "validation": "np.random.seed"
+    },
+    {
+      "id": "task-3",
+      "description": "Change the plot title to include your name",
+      "hint": "Find the plt.title() line and modify the string",
+      "validation": "plt.title"
+    }
+  ],
+  "tools": [
+    {
+      "name": "numpy.random.rand",
+      "description": "Creates an array of specified shape and fills it with random values",
+      "syntax": "numpy.random.rand(d0, d1, ..., dn)",
+      "link": "https://numpy.org/doc/stable/reference/random/generated/numpy.random.rand.html"
+    },
+    {
+      "name": "matplotlib.pyplot.scatter",
+      "description": "Creates a scatter plot with (x,y) coordinates",
+      "syntax": "plt.scatter(x, y)",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.scatter.html"
+    }
+  ]
+} 
