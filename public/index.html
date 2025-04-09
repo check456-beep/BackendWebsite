@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Scientific IDE</title>
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/theme/monokai.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/addon/hint/show-hint.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/addon/dialog/dialog.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/addon/lint/lint.min.css">
+    <style>
+        body {
+            font-family: monospace;
+            margin: 0;
+            padding: 10px;
+        }
+        .container {
+            width: 100%;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+        }
+        .editor-area {
+            flex: 3;
+            margin-bottom: 10px;
+        }
+        .CodeMirror {
+            width: 100%;
+            height: 100%;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .output-container {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+        }
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+        }
+        .output {
+            flex: 1;
+            overflow: auto;
+            white-space: pre-wrap;
+            font-family: monospace;
+            border: 1px solid #ccc;
+            padding: 5px;
+            min-height: 100px;
+        }
+        .input-container {
+            display: flex;
+            padding: 5px;
+            margin-top: 10px;
+        }
+        .user-input-box {
+            flex: 1;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Python Scientific Web IDE</h1>
+            <div style="display: flex; align-items: center;">
+                <span class="status" id="status"></span>
+                <button id="run-btn" class="run-btn">Run Code</button>
+            </div>
+        </div>
+        <div class="editor-container">
+            <div class="editor-area">
+                <textarea id="code-editor" spellcheck="false">import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate some data
+x = np.linspace(0, 10, 100)
+y = np.sin(x)
+
+# Create a plot
+plt.figure(figsize=(8, 4))
+plt.plot(x, y, 'b-', linewidth=2, label='sin(x)')
+plt.title('Simple Sine Wave')
+plt.xlabel('x')
+plt.ylabel('sin(x)')
+plt.grid(True)
+plt.legend()
+plt.show()
+
+print("Plot generated successfully!")</textarea>
+            </div>
+            <div class="output-container">
+                <div class="output-header">
+                    <span>Output</span>
+                    <button class="clear-btn" id="clear-output">Clear</button>
+                </div>
+                <div class="output" id="output-area">Output will appear here...</div>
+                <div class="input-container">
+                    <input type="text" id="user-input" placeholder="Type your input here..." class="user-input-box" />
+                    <button id="send-input" class="send-btn">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/addon/hint/python-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/addon/search/search.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/addon/search/searchcursor.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/addon/dialog/dialog.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/addon/lint/lint.min.js"></script>
+    <script src="https://unpkg.com/jshint@2.13.5/dist/jshint.js"></script>
+    <script src="https://unpkg.com/jsonlint@1.6.3/web/jsonlint.js"></script>
+    <script src="https://unpkg.com/pylint-browser@0.1.0/dist/pylint-browser.min.js"></script>
+
+    <script>
+        // Setup editor and execution handling
+        document.addEventListener('DOMContentLoaded', function() {
+            // Track execution state
+            let isExecuting = false;
+            let currentProcessId = null;
+            let wsConnection = null;
+            
+            // Initialize CodeMirror
+            const codeEditorElem = document.getElementById('code-editor');
+            const editor = CodeMirror.fromTextArea(codeEditorElem, {
+                mode: 'python',
+                theme: 'monokai',
+                lineNumbers: true,
+                indentUnit: 4,
+                smartIndent: true,
+                indentWithTabs: false,
+                electricChars: true,
+                matchBrackets: true,
+                autoCloseBrackets: true,
+                styleActiveLine: true,
+                extraKeys: {
+                    "Ctrl-Space": "autocomplete",
+                    "Ctrl-F": "findPersistent",
+                    "Ctrl-Enter": function(cm) {
+                        if (!isExecuting) {
+                            runBtn.click();
+                        }
+                    },
+                    "Tab": function(cm) {
+                        const spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+                        cm.replaceSelection(spaces);
+                    }
+                },
+                gutters: ["CodeMirror-lint-markers"],
+                lint: true
+            });
+            
+            // Create custom hints for common Python scientific libraries
+            const pythonHints = {
+                'np': ['array', 'zeros', 'ones', 'linspace', 'arange', 'sin', 'cos', 'tan', 'exp', 'log', 'random'],
+                'plt': ['figure', 'plot', 'scatter', 'bar', 'hist', 'title', 'xlabel', 'ylabel', 'legend', 'show', 'grid', 'savefig'],
+                'pd': ['DataFrame', 'Series', 'read_csv', 'read_excel', 'concat', 'merge', 'groupby'],
+                'sklearn': ['model_selection', 'preprocessing', 'linear_model', 'metrics', 'cluster']
+            };
+            
+            // Custom autocomplete for Python scientific libraries
+            CodeMirror.registerHelper("hint", "python", function(editor) {
+                const cursor = editor.getCursor();
+                const line = editor.getLine(cursor.line);
+                const token = editor.getTokenAt(cursor);
+                
+                // Check if typing after a dot
+                const dotMatch = line.slice(0, cursor.ch).match(/(\w+)\.\w*$/);
+                if (dotMatch) {
+                    const prefix = dotMatch[1];
+                    const methods = pythonHints[prefix] || [];
+                    
+                    const start = {line: cursor.line, ch: cursor.ch - token.string.length};
+                    const end = {line: cursor.line, ch: cursor.ch};
+                    
+                    return {
+                        list: methods.filter(m => m.startsWith(token.string)),
+                        from: start,
+                        to: end
+                    };
+                }
+                
+                // Default Python autocomplete
+                return CodeMirror.hint.python(editor);
+            });
+            
+            const runBtn = document.getElementById('run-btn');
+            const outputArea = document.getElementById('output-area');
+            const status = document.getElementById('status');
+            const userInput = document.getElementById('user-input');
+            const sendInputBtn = document.getElementById('send-input');
+            
+            // Initialize WebSocket connection
+            function initWebSocket() {
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const wsUrl = `${protocol}//${window.location.host}`;
+                
+                wsConnection = new WebSocket(wsUrl);
+                
+                wsConnection.onopen = function() {
+                    console.log('WebSocket connection established');
+                };
+                
+                wsConnection.onmessage = function(event) {
+                    try {
+                        const message = JSON.parse(event.data);
+                        
+                        if (message.type === 'output') {
+                            appendToOutput(message.data);
+                        } else if (message.type === 'error') {
+                            appendToOutput(message.data, true);
+                        } else if (message.type === 'completed') {
+                            isExecuting = false;
+                            runBtn.disabled = false;
+                        }
+                    } catch (error) {
+                        console.error('Error processing WebSocket message:', error);
+                    }
+                };
+                
+                wsConnection.onclose = function() {
+                    console.log('WebSocket connection closed');
+                    // Try to reconnect after a delay
+                    setTimeout(initWebSocket, 3000);
+                };
+                
+                wsConnection.onerror = function(error) {
+                    console.error('WebSocket error:', error);
+                };
+            }
+            
+            // Initialize WebSocket
+            initWebSocket();
+            
+            // Append content to output area
+            function appendToOutput(content, isError = false) {
+                const span = document.createElement('span');
+                span.textContent = content;
+                if (isError) {
+                    span.style.color = '#e74c3c';
+                }
+                outputArea.appendChild(span);
+                
+                // Auto-scroll to bottom
+                outputArea.scrollTop = outputArea.scrollHeight;
+            }
+            
+            // Send input to the Python process
+            function sendInput() {
+                if (!currentProcessId || !wsConnection || wsConnection.readyState !== WebSocket.OPEN) {
+                    appendToOutput('No active process to receive input.\n', true);
+                    return;
+                }
+                
+                const input = userInput.value;
+                if (!input.trim()) return;
+                
+                // Display the input in the output area
+                appendToOutput(`> ${input}\n`);
+                
+                // Send to WebSocket
+                wsConnection.send(JSON.stringify({
+                    type: 'input',
+                    processId: currentProcessId,
+                    data: input
+                }));
+                
+                // Clear the input field
+                userInput.value = '';
+            }
+            
+            // Send input button click
+            sendInputBtn.addEventListener('click', sendInput);
+            
+            // Input field key press
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendInput();
+                    e.preventDefault();
+                }
+            });
+
+            // Run button click event
+            runBtn.addEventListener('click', function() {
+                if (isExecuting) return;
+                
+                // Get code from CodeMirror
+                const code = editor.getValue();
+                if (!code.trim()) {
+                    outputArea.textContent = 'No code to execute. Please enter some Python code.';
+                    return;
+                }
+                
+                // Set executing state
+                isExecuting = true;
+                runBtn.disabled = true;
+                outputArea.textContent = 'Running code...\n';
+                status.textContent = 'Executing...';
+                
+                // Start execution timer
+                const startTime = Date.now();
+                
+                fetch('/api/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ code: code })
+                })
+                .then(function(response) {
+                    if (!response.ok) {
+                        throw new Error('Server error: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function(data) {
+                    const executionTime = data.executionTime || ((Date.now() - startTime) / 1000).toFixed(2);
+                    
+                    // Store the process ID for input handling
+                    currentProcessId = data.processId;
+                    
+                    // Register with WebSocket
+                    if (wsConnection && wsConnection.readyState === WebSocket.OPEN && currentProcessId) {
+                        wsConnection.send(JSON.stringify({
+                            type: 'register',
+                            processId: currentProcessId
+                        }));
+                    }
+                    
+                    outputArea.innerHTML = data.output || 'No output';
+                    status.textContent = 'Completed in ' + executionTime + 's';
+                })
+                .catch(function(error) {
+                    outputArea.textContent = 'Error: ' + error.message;
+                    status.textContent = 'Failed';
+                    isExecuting = false;
+                    runBtn.disabled = false;
+                });
+            });
+
+            // Clear output button
+            document.getElementById('clear-output').addEventListener('click', function() {
+                outputArea.textContent = 'Output will appear here...';
+                status.textContent = '';
+            });
+        });
+    </script>
+</body>
+</html>
