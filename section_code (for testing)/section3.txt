@@ -1,0 +1,246 @@
+# Evaluating Regression Models
+# ===========================
+
+"""
+In this section, you'll learn how to evaluate regression models using different metrics
+and compare their performance. Follow the instructions below to build your understanding step by step.
+"""
+
+# STEP 1: Import necessary libraries
+"""
+Import the required libraries:
+- numpy for numerical operations
+- matplotlib.pyplot for visualization
+- PolynomialFeatures, LinearRegression, Ridge, Lasso from sklearn
+- make_pipeline, train_test_split, mean_squared_error, r2_score from sklearn
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression, Ridge
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+
+print("✓ Task 1 Complete: Libraries imported successfully")
+
+# STEP 2: Generate sample data with noise
+"""
+Generate non-linear data with noise:
+- Set a random seed (42) for reproducibility
+- Generate 200 random X values between -3 and 3
+- Create y values using the formula: y = 0.8 * X^2 + 0.5 * X + 2 + random noise
+"""
+
+np.random.seed(42)
+X = 6 * np.random.rand(200, 1) - 3
+y = 0.8 * X**2 + 0.5 * X + 2 + np.random.randn(200, 1)
+
+print("✓ Task 2 Complete: Sample data with noise generated")
+
+# STEP 3: Split data into training and testing sets
+"""
+Split the data into training and testing sets:
+- Use train_test_split with test_size=0.3 and random_state=42
+- Store the result in X_train, X_test, y_train, y_test
+"""
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+print("✓ Task 3 Complete: Data split into training and testing sets")
+
+# STEP 4: Set up the comparison experiment
+"""
+Set up the experiment to compare different polynomial degrees:
+- Create a list of degrees to test [1, 2, 3, 5, 10]
+- Create a figure for plotting (14, 10)
+- Set up a subplot for the data and models
+"""
+
+# List of polynomial degrees to test
+degrees = [1, 2, 3, 5, 10]
+colors = ['blue', 'green', 'red', 'purple', 'orange']
+
+# Create a figure with 2 rows of subplots
+fig = plt.figure(figsize=(14, 10))
+
+# Set up the first subplot for data and models
+ax1 = fig.add_subplot(2, 1, 1)
+
+print("✓ Task 4 Complete: Comparison experiment set up with degrees [1, 2, 3, 5, 10]")
+
+# STEP 5: Plot the training and testing data
+"""
+Visualize the training and testing data:
+- Create a scatter plot of training data (X_train, y_train) in one color
+- Create a scatter plot of testing data (X_test, y_test) in another color (orange)
+- Add a title, label, legend, and grid to the plot
+"""
+
+# Plot training and testing data
+ax1.scatter(X_train, y_train, color='blue', alpha=0.7, label='Training data')
+ax1.scatter(X_test, y_test, color='orange', alpha=0.7, label='Testing data')
+ax1.set_title('Polynomial Regression Models of Different Degrees')
+ax1.set_xlabel('X')
+ax1.set_ylabel('y')
+ax1.grid(True)
+ax1.legend()
+
+print("✓ Task 5 Complete: Training and testing data visualized")
+
+# STEP 6: Create and evaluate models of different degrees
+"""
+Compare models of different polynomial degrees:
+- Create a list to store results
+- Generate X values for plotting (np.linspace)
+- For each degree:
+  - Create a polynomial regression model with make_pipeline
+  - Train the model on training data
+  - Make predictions on training and testing data
+  - Calculate metrics (MSE, R²) for both training and testing sets
+  - Store the results
+  - Plot the model predictions
+"""
+
+# Create a sorted array of X values for smooth curve plotting
+X_plot = np.linspace(-3, 3, 100).reshape(-1, 1)
+
+# List to store evaluation results
+results = []
+
+# Create and evaluate polynomial models of different degrees
+for i, degree in enumerate(degrees):
+    # Create and train the model
+    model = make_pipeline(
+        PolynomialFeatures(degree=degree),
+        LinearRegression()
+    )
+    model.fit(X_train, y_train)
+    
+    # Make predictions on the plot range for visualization
+    y_plot = model.predict(X_plot)
+    
+    # Plot the polynomial curve
+    ax1.plot(X_plot, y_plot, color=colors[i], label=f'Degree {degree}', linewidth=2)
+    
+    # Make predictions on training and testing data for evaluation
+    y_train_pred = model.predict(X_train)
+    y_test_pred = model.predict(X_test)
+    
+    # Calculate metrics
+    train_mse = mean_squared_error(y_train, y_train_pred)
+    test_mse = mean_squared_error(y_test, y_test_pred)
+    train_r2 = r2_score(y_train, y_train_pred)
+    test_r2 = r2_score(y_test, y_test_pred)
+    
+    # Store results
+    results.append({
+        'degree': degree,
+        'train_mse': train_mse,
+        'test_mse': test_mse,
+        'train_r2': train_r2,
+        'test_r2': test_r2
+    })
+    
+    print(f"Degree {degree} - Train MSE: {train_mse:.4f}, Test MSE: {test_mse:.4f}")
+    print(f"Degree {degree} - Train R²: {train_r2:.4f}, Test R²: {test_r2:.4f}")
+
+# Update legend after adding all models
+ax1.legend(loc='upper left')
+
+print("✓ Task 6 Complete: Models of different degrees created and evaluated")
+
+# STEP 7: Add Ridge regression for comparison
+"""
+Add a Ridge regression model (with regularization) to compare with standard models:
+- Create a Ridge model with alpha=1.0 for the best degree
+- Train it on the training data
+- Evaluate its performance
+- Add it to the plot
+"""
+
+# Find the best degree based on test MSE
+best_degree = min(results, key=lambda x: x['test_mse'])['degree']
+print(f"\nBest degree based on test MSE: {best_degree}")
+
+# Create and train a Ridge regression model with the best degree
+ridge_model = make_pipeline(
+    PolynomialFeatures(degree=best_degree),
+    Ridge(alpha=1.0)
+)
+ridge_model.fit(X_train, y_train)
+
+# Make predictions
+ridge_y_plot = ridge_model.predict(X_plot)
+ridge_y_train_pred = ridge_model.predict(X_train)
+ridge_y_test_pred = ridge_model.predict(X_test)
+
+# Calculate metrics
+ridge_train_mse = mean_squared_error(y_train, ridge_y_train_pred)
+ridge_test_mse = mean_squared_error(y_test, ridge_y_test_pred)
+ridge_train_r2 = r2_score(y_train, ridge_y_train_pred)
+ridge_test_r2 = r2_score(y_test, ridge_y_test_pred)
+
+# Plot Ridge model
+ax1.plot(X_plot, ridge_y_plot, color='black', linestyle='--', 
+         label=f'Degree {best_degree} with Ridge', linewidth=2)
+ax1.legend(loc='upper left')
+
+print(f"Ridge (degree {best_degree}) - Train MSE: {ridge_train_mse:.4f}, Test MSE: {ridge_test_mse:.4f}")
+print(f"Ridge (degree {best_degree}) - Train R²: {ridge_train_r2:.4f}, Test R²: {ridge_test_r2:.4f}")
+print("✓ Task 7 Complete: Ridge regression model added for comparison")
+
+# STEP 8: Visualize evaluation metrics
+"""
+Create a visualization of metrics:
+- Set up a subplot for metrics visualization
+- Extract metrics from results (degree, train_mse, test_mse, etc.)
+- Create a bar chart comparing train and test MSE
+- Add labels, title, and a legend
+"""
+
+# Set up the second subplot for metrics visualization
+ax2 = fig.add_subplot(2, 1, 2)
+
+# Prepare data for plotting
+degrees_labels = [str(r['degree']) for r in results]
+train_mse_values = [r['train_mse'] for r in results]
+test_mse_values = [r['test_mse'] for r in results]
+
+# Set up bar positions
+x = np.arange(len(degrees_labels))
+width = 0.35
+
+# Create bar chart
+bars1 = ax2.bar(x - width/2, train_mse_values, width, label='Training MSE')
+bars2 = ax2.bar(x + width/2, test_mse_values, width, label='Testing MSE')
+
+# Add labels and title
+ax2.set_ylabel('Mean Squared Error')
+ax2.set_xlabel('Polynomial Degree')
+ax2.set_title('Training vs Testing MSE for Different Model Complexities')
+ax2.set_xticks(x)
+ax2.set_xticklabels(degrees_labels)
+ax2.legend()
+
+# Annotate bars with values
+def annotate_bars(bars):
+    for bar in bars:
+        height = bar.get_height()
+        ax2.annotate(f'{height:.2f}',
+                    xy=(bar.get_x() + bar.get_width() / 2, height),
+                    xytext=(0, 3),  # 3 points vertical offset
+                    textcoords="offset points",
+                    ha='center', va='bottom', rotation=90, fontsize=8)
+
+annotate_bars(bars1)
+annotate_bars(bars2)
+
+# Adjust layout and display
+plt.tight_layout()
+plt.show()
+
+print("✓ Task 8 Complete: Evaluation metrics visualized")
+
+print("\n✓✓✓ All Tasks Complete! Model evaluation complete!") 

@@ -2,39 +2,135 @@
   "id": "section-1",
   "title": "Understanding Linear Regression",
   "content": "Linear regression is a fundamental algorithm in machine learning used to predict a continuous value based on input features. It establishes a relationship between independent variable(s) and a dependent variable by fitting a linear equation to the data.",
-  "code": "import numpy as np\nimport matplotlib.pyplot as plt\n\n# Generate sample data\nnp.random.seed(42)\nX = 2 * np.random.rand(100, 1)\ny = 4 + 3 * X + np.random.randn(100, 1)\n\n# Plot the data\nplt.figure(figsize=(10, 6))\nplt.scatter(X, y)\nplt.xlabel('Input feature')\nplt.ylabel('Target value')\nplt.title('Sample Data for Linear Regression')\nplt.show()\n\nprint(\"Data generation complete!\")",
+  "code": "# Understanding Linear Regression\n# ==============================\n\n\"\"\"\nIn this section, you'll learn about linear regression by implementing \nit from scratch using NumPy and visualizing the results.\nFollow the instructions below to build your understanding step by step.\n\"\"\"\n\n# STEP 1: Import necessary libraries\n\"\"\"\nFirst, we need to import NumPy for numerical operations and Matplotlib for visualization:\n- numpy for mathematical operations\n- matplotlib.pyplot for creating plots\n\"\"\"\n\n# Your code here\n\n\n# STEP 2: Generate sample data\n\"\"\"\nLet's create some sample data with a linear relationship:\n- Set the random seed to 42 for reproducibility\n- Create 100 random X values between 0 and 2\n- Generate y values using the formula: y = 4 + 3 * X + random noise\n\"\"\"\n\n# Your code here\n\n\n# STEP 3: Visualize the data\n\"\"\"\nCreate a scatter plot to visualize the data:\n- Set figure size to (10, 6)\n- Plot X vs y using plt.scatter()\n- Add labels for axes\n- Add a title for the plot\n- Display the plot\n\"\"\"\n\n# Your code here\n\n\nprint(\"Data generation complete!\")",
   "tasks": [
     {
       "id": "task-1",
-      "description": "Run the code to generate sample data",
-      "hint": "Click the 'Run Code' button to execute the provided code",
-      "validation": "Data generation complete!"
+      "description": "Import the necessary libraries",
+      "hint": "You need to import numpy and matplotlib.pyplot",
+      "validation": "import numpy as np\nimport matplotlib.pyplot as plt"
     },
     {
       "id": "task-2",
-      "description": "Modify the code to use a different random seed value",
-      "hint": "Change np.random.seed(42) to a different number",
-      "validation": "np.random.seed"
+      "description": "Generate the sample data as described in STEP 2",
+      "hint": "Use np.random.seed(42), np.random.rand() for X, and create y with the given formula",
+      "validation": "np.random.seed(42)\nX = 2 * np.random.rand(100, 1)\ny = 4 + 3 * X + np.random.randn(100, 1)"
     },
     {
       "id": "task-3",
-      "description": "Change the plot title to include your name",
-      "hint": "Find the plt.title() line and modify the string",
-      "validation": "plt.title"
+      "description": "Create the scatter plot as described in STEP 3",
+      "hint": "Use plt.figure(), plt.scatter(), plt.xlabel(), plt.ylabel(), and plt.title()",
+      "validation": "plt.scatter(X, y)"
+    },
+    {
+      "id": "task-4",
+      "description": "Add a grid to the plot for better readability",
+      "hint": "Use plt.grid(True) to add a grid to your plot",
+      "validation": "plt.grid(True)"
+    }
+  ],
+  "tips": [
+    {
+      "id": "tip-1",
+      "position": "after-task-1",
+      "title": "Understanding Libraries in Data Science",
+      "content": "NumPy is the foundation for numerical computing in Python, providing efficient array operations. Matplotlib is the most widely used visualization library, allowing you to create a variety of plots.",
+      "type": "explanation"
+    },
+    {
+      "id": "tip-2",
+      "position": "after-task-2",
+      "title": "Understanding Random Seeds",
+      "content": "Setting a random seed (like np.random.seed(42)) ensures that the 'random' numbers generated are the same each time you run the code. This is crucial for reproducibility in data science!",
+      "type": "explanation"
+    },
+    {
+      "id": "tip-3",
+      "position": "after-task-3",
+      "title": "Visualizing Your Data",
+      "content": "Data visualization is a critical step in any data science workflow. It helps you understand patterns and relationships before applying machine learning algorithms.",
+      "type": "explanation"
+    },
+    {
+      "id": "tip-4",
+      "position": "after-task-4",
+      "title": "Linear Relationships",
+      "content": "The scatter plot should show a clear linear trend with some noise. Linear regression aims to find the line that best fits this data by minimizing the prediction errors.",
+      "type": "concept"
     }
   ],
   "tools": [
     {
-      "name": "numpy.random.rand",
-      "description": "Creates an array of specified shape and fills it with random values",
-      "syntax": "numpy.random.rand(d0, d1, ..., dn)",
+      "name": "numpy",
+      "description": "Fundamental package for scientific computing in Python, providing support for arrays, matrices, and mathematical functions",
+      "syntax": "import numpy as np",
+      "link": "https://numpy.org/doc/stable/"
+    },
+    {
+      "name": "matplotlib.pyplot",
+      "description": "MATLAB-like plotting framework for creating static, animated, and interactive visualizations in Python",
+      "syntax": "import matplotlib.pyplot as plt",
+      "link": "https://matplotlib.org/stable/api/pyplot_summary.html"
+    },
+    {
+      "name": "np.random.seed",
+      "description": "Sets the seed for numpy's random number generator, ensuring reproducibility of random operations",
+      "syntax": "np.random.seed(seed)",
+      "link": "https://numpy.org/doc/stable/reference/random/generated/numpy.random.seed.html"
+    },
+    {
+      "name": "np.random.rand",
+      "description": "Creates an array of specified shape and fills it with random values uniformly distributed between 0 and 1",
+      "syntax": "np.random.rand(d0, d1, ..., dn)",
       "link": "https://numpy.org/doc/stable/reference/random/generated/numpy.random.rand.html"
     },
     {
-      "name": "matplotlib.pyplot.scatter",
-      "description": "Creates a scatter plot with (x,y) coordinates",
-      "syntax": "plt.scatter(x, y)",
+      "name": "np.random.randn",
+      "description": "Creates an array of specified shape and fills it with random values from a standard normal distribution (mean=0, stdev=1)",
+      "syntax": "np.random.randn(d0, d1, ..., dn)",
+      "link": "https://numpy.org/doc/stable/reference/random/generated/numpy.random.randn.html"
+    },
+    {
+      "name": "plt.figure",
+      "description": "Creates a new figure or activates an existing figure with specified size and properties",
+      "syntax": "plt.figure(figsize=(width, height))",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.figure.html"
+    },
+    {
+      "name": "plt.scatter",
+      "description": "Creates a scatter plot with (x,y) coordinates, with options for marker size, color, and transparency",
+      "syntax": "plt.scatter(x, y, s=None, c=None, alpha=None)",
       "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.scatter.html"
+    },
+    {
+      "name": "plt.xlabel",
+      "description": "Sets the label for the x-axis with options for font properties",
+      "syntax": "plt.xlabel(label, fontdict=None, labelpad=None)",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.xlabel.html"
+    },
+    {
+      "name": "plt.ylabel",
+      "description": "Sets the label for the y-axis with options for font properties",
+      "syntax": "plt.ylabel(label, fontdict=None, labelpad=None)",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.ylabel.html"
+    },
+    {
+      "name": "plt.title",
+      "description": "Sets the title for the current axes/plot with options for font properties",
+      "syntax": "plt.title(label, fontdict=None, loc='center', pad=None)",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.title.html"
+    },
+    {
+      "name": "plt.grid",
+      "description": "Configures the grid lines for the current axes, with options for line style and visibility",
+      "syntax": "plt.grid(visible=None, which='major', axis='both', linestyle='-')",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.grid.html"
+    },
+    {
+      "name": "plt.show",
+      "description": "Displays all open figures and blocks until they have been closed (when used in non-interactive mode)",
+      "syntax": "plt.show()",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html"
     }
   ]
 } 

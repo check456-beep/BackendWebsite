@@ -2,45 +2,171 @@
   "id": "section-2",
   "title": "Implementing Polynomial Regression with NumPy",
   "content": "Polynomial regression extends linear regression by fitting a polynomial equation to the data. This allows the model to capture non-linear relationships between variables by adding polynomial terms to the linear equation.",
-  "code": "import numpy as np\nimport matplotlib.pyplot as plt\nfrom sklearn.preprocessing import PolynomialFeatures\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.pipeline import make_pipeline\n\n# Generate non-linear sample data\nnp.random.seed(42)\nX = 6 * np.random.rand(100, 1) - 3\ny = 0.5 * X**2 + X + 2 + np.random.randn(100, 1) * 0.5\n\n# Create and visualize the raw data\nplt.figure(figsize=(10, 6))\nplt.scatter(X, y, alpha=0.7)\nplt.title('Non-linear Data for Polynomial Regression')\nplt.xlabel('X')\nplt.ylabel('y')\nplt.grid(True, alpha=0.3)\n\n# Compare different polynomial degrees\ndegrees = [1, 2, 4]\nX_test = np.linspace(-3, 3, 100).reshape(-1, 1)\n\nplt.figure(figsize=(14, 8))\nplt.scatter(X, y, alpha=0.7, label='Training data')\n\nfor degree in degrees:\n    # Create a polynomial regression model\n    model = make_pipeline(\n        PolynomialFeatures(degree=degree),\n        LinearRegression()\n    )\n    \n    # Train the model\n    model.fit(X, y)\n    \n    # Make predictions on test data\n    y_pred = model.predict(X_test)\n    \n    # Plot the polynomial curve\n    plt.plot(X_test, y_pred, label=f'Degree {degree}')\n\nplt.title('Polynomial Regression with Different Degrees')\nplt.xlabel('X')\nplt.ylabel('y')\nplt.legend()\nplt.grid(True, alpha=0.3)\nplt.ylim(-2, 10)\nplt.show()\n\nprint(\"Polynomial regression models generated!\")",
+  "code": "# Implementing Polynomial Regression with NumPy\n# ==========================================\n\n\"\"\"\nIn this section, we'll implement polynomial regression to model non-linear relationships in data.\nFollow the instructions below to build your model step by step.\n\"\"\"\n\n# STEP 1: Import necessary libraries\n\"\"\"\nFirst, we need to import the required libraries:\n- numpy for numerical operations\n- matplotlib.pyplot for visualization\n- PolynomialFeatures from sklearn.preprocessing to create polynomial features\n- LinearRegression from sklearn.linear_model for the regression model\n- make_pipeline from sklearn.pipeline to simplify our workflow\n\"\"\"\n\n# Your code here\n\n\n# STEP 2: Generate non-linear sample data\n\"\"\"\nGenerate sample data with a non-linear pattern:\n- Use numpy's random seed for reproducibility (set to 42)\n- Create 100 random X values between -3 and 3\n- Generate y values using the formula: y = 0.5 * X^2 + X + 2 + random noise\n\"\"\"\n\n# Your code here\n\n\n# STEP 3: Visualize the raw data\n\"\"\"\nCreate a scatter plot of the data:\n- Set figure size to (10, 6)\n- Use plt.scatter() to plot X vs y\n- Add title, labels, and grid\n\"\"\"\n\n# Your code here\n\n\n# STEP 4: Create and compare polynomial regression models\n\"\"\"\nNow let's create and compare polynomial regression models of different degrees:\n- Create a list of degrees to test [1, 2, 4]\n- Generate test points using np.linspace(-3, 3, 100)\n- For each degree:\n  - Create a polynomial regression model using make_pipeline\n  - Fit the model to the training data\n  - Make predictions\n  - Plot the resulting curve\n\"\"\"\n\n# Your code here\n\n\n# STEP 5: Add final touches to the plot\n\"\"\"\nComplete your visualization:\n- Add a title 'Polynomial Regression with Different Degrees'\n- Add x and y labels\n- Add a legend\n- Add a grid\n- Set y-axis limits from -2 to 10\n- Display the plot\n\"\"\"\n\n# Your code here\n\nprint(\"Polynomial regression models generated!\")",
   "tasks": [
     {
       "id": "task-1",
-      "description": "Run the code to generate and visualize polynomial regression models",
-      "hint": "Click the 'Run Code' button to execute the provided code",
-      "validation": "Polynomial regression models generated!"
+      "description": "Implement the code to import necessary libraries",
+      "hint": "Look at the instructions in STEP 1. You'll need numpy, matplotlib.pyplot, and specific imports from sklearn.",
+      "validation": "import numpy as np\nimport matplotlib.pyplot as plt\nfrom sklearn.preprocessing import PolynomialFeatures\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.pipeline import make_pipeline"
     },
     {
       "id": "task-2",
-      "description": "Change the degree list to include degree 3",
-      "hint": "Modify the 'degrees' list to include 3, e.g., degrees = [1, 2, 3, 4]",
-      "validation": "degrees = [1, 2, 3, 4]"
+      "description": "Generate non-linear sample data as described in STEP 2",
+      "hint": "Use np.random.seed(42), np.random.rand(), and implement the non-linear equation",
+      "validation": "np.random.seed(42)\nX = 6 * np.random.rand(100, 1) - 3\ny = 0.5 * X**2 + X + 2 + np.random.randn(100, 1) * 0.5"
     },
     {
       "id": "task-3",
-      "description": "Increase the complexity of the generated data by changing the equation",
-      "hint": "Try modifying the equation that generates y, e.g., y = 0.5 * X**3 + X + 2 + np.random.randn(100, 1) * 0.5",
-      "validation": "X**3"
+      "description": "Create and visualize the raw data",
+      "hint": "Use plt.figure(), plt.scatter(), and add appropriate labels",
+      "validation": "plt.scatter(X, y"
+    },
+    {
+      "id": "task-4",
+      "description": "Implement code to compare different polynomial degrees",
+      "hint": "Create a degrees list, generate test data with np.linspace(), and use a loop to fit models of different degrees",
+      "validation": "degrees = [1, 2, 4]"
+    },
+    {
+      "id": "task-5",
+      "description": "Implement a higher degree polynomial (degree 7) and observe if it improves the fit",
+      "hint": "Add 7 to your degrees list, e.g., degrees = [1, 2, 4, 7]",
+      "validation": "degrees = [1, 2, 4, 7]"
+    }
+  ],
+  "tips": [
+    {
+      "id": "tip-1",
+      "position": "after-task-2",
+      "title": "Understanding Synthetic Data Generation",
+      "content": "The equation we're using (y = 0.5 * X^2 + X + 2 + noise) creates a quadratic relationship. The random noise makes it more realistic, simulating measurement errors that occur in real-world data.",
+      "type": "explanation"
+    },
+    {
+      "id": "tip-2",
+      "position": "after-task-3",
+      "title": "Visualizing the Problem",
+      "content": "The scatter plot should show a clear non-linear pattern. This is why we need polynomial regression - linear regression would not be able to capture this curved relationship.",
+      "type": "explanation"
+    },
+    {
+      "id": "tip-3",
+      "position": "after-task-4",
+      "title": "The Bias-Variance Tradeoff",
+      "content": "As you increase the polynomial degree, the model becomes more flexible but may start fitting to noise (overfitting). This is part of the fundamental bias-variance tradeoff in machine learning.",
+      "type": "explanation"
+    },
+    {
+      "id": "tip-4",
+      "position": "after-task-5",
+      "title": "Choosing the Right Complexity",
+      "content": "The best model is usually the simplest one that adequately captures the pattern in the data. For our generated data (which follows a quadratic pattern), a degree 2 polynomial should be sufficient. Higher degrees might overfit.",
+      "type": "concept"
     }
   ],
   "tools": [
     {
+      "name": "numpy",
+      "description": "Fundamental package for scientific computing in Python, providing support for arrays, matrices, and mathematical functions",
+      "syntax": "import numpy as np",
+      "link": "https://numpy.org/doc/stable/"
+    },
+    {
+      "name": "matplotlib.pyplot",
+      "description": "MATLAB-like plotting framework for creating static, animated, and interactive visualizations in Python",
+      "syntax": "import matplotlib.pyplot as plt",
+      "link": "https://matplotlib.org/stable/api/pyplot_summary.html"
+    },
+    {
+      "name": "sklearn",
+      "description": "Machine learning library featuring various classification, regression, and clustering algorithms",
+      "syntax": "import sklearn",
+      "link": "https://scikit-learn.org/stable/"
+    },
+    {
       "name": "sklearn.preprocessing.PolynomialFeatures",
-      "description": "Generates polynomial features from input data",
+      "description": "Generates polynomial and interaction features from input data, transforming linear models into polynomial regression models",
       "syntax": "PolynomialFeatures(degree=2, interaction_only=False, include_bias=True)",
       "link": "https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html"
     },
     {
+      "name": "sklearn.linear_model.LinearRegression",
+      "description": "Ordinary least squares linear regression model that fits a linear model to minimize the residual sum of squares",
+      "syntax": "LinearRegression(fit_intercept=True, normalize=False, copy_X=True, n_jobs=None)",
+      "link": "https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html"
+    },
+    {
       "name": "sklearn.pipeline.make_pipeline",
-      "description": "Creates a pipeline of sequential transformers and estimators",
+      "description": "Creates a pipeline of sequential transformers and estimators to simplify the workflow of data preprocessing and modeling",
       "syntax": "make_pipeline(*steps)",
       "link": "https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.make_pipeline.html"
     },
     {
-      "name": "numpy.linspace",
-      "description": "Creates evenly spaced numbers over a specified interval",
-      "syntax": "numpy.linspace(start, stop, num=50)",
+      "name": "np.random.seed",
+      "description": "Sets the seed for numpy's random number generator, ensuring reproducibility of random operations",
+      "syntax": "np.random.seed(seed)",
+      "link": "https://numpy.org/doc/stable/reference/random/generated/numpy.random.seed.html"
+    },
+    {
+      "name": "np.random.rand",
+      "description": "Creates an array of specified shape and fills it with random values uniformly distributed between 0 and 1",
+      "syntax": "np.random.rand(d0, d1, ..., dn)",
+      "link": "https://numpy.org/doc/stable/reference/random/generated/numpy.random.rand.html"
+    },
+    {
+      "name": "np.random.randn",
+      "description": "Creates an array of specified shape and fills it with random values from a standard normal distribution (mean=0, stdev=1)",
+      "syntax": "np.random.randn(d0, d1, ..., dn)",
+      "link": "https://numpy.org/doc/stable/reference/random/generated/numpy.random.randn.html"
+    },
+    {
+      "name": "np.linspace",
+      "description": "Creates evenly spaced numbers over a specified interval, with control over the number of points",
+      "syntax": "np.linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0)",
       "link": "https://numpy.org/doc/stable/reference/generated/numpy.linspace.html"
+    },
+    {
+      "name": "plt.figure",
+      "description": "Creates a new figure or activates an existing figure with specified size and properties",
+      "syntax": "plt.figure(figsize=(width, height))",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.figure.html"
+    },
+    {
+      "name": "plt.scatter",
+      "description": "Creates a scatter plot with (x,y) coordinates, with options for marker size, color, and transparency",
+      "syntax": "plt.scatter(x, y, s=None, c=None, alpha=None)",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.scatter.html"
+    },
+    {
+      "name": "plt.plot",
+      "description": "Plots y versus x as lines and/or markers, used for creating line plots",
+      "syntax": "plt.plot(x, y, 'bo-', linewidth=2, markersize=4)",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.plot.html"
+    },
+    {
+      "name": "plt.legend",
+      "description": "Places a legend on the current axes, with various location and styling options",
+      "syntax": "plt.legend(handles=None, labels=None, loc='best')",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html"
+    },
+    {
+      "name": "plt.ylim",
+      "description": "Gets or sets the y-limits of the current axes",
+      "syntax": "plt.ylim(bottom, top)",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.ylim.html"
+    },
+    {
+      "name": "model.fit",
+      "description": "Fits the polynomial regression model to the training data",
+      "syntax": "model.fit(X, y)",
+      "link": "https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline.fit"
+    },
+    {
+      "name": "model.predict",
+      "description": "Predicts using the polynomial regression model",
+      "syntax": "model.predict(X)",
+      "link": "https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline.predict"
     }
   ]
 } 

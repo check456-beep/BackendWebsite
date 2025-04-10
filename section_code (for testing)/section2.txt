@@ -1,0 +1,128 @@
+# Implementing Polynomial Regression with NumPy
+# ==========================================
+
+"""
+In this section, we'll implement polynomial regression to model non-linear relationships in data.
+Follow the instructions below to build your model step by step.
+"""
+
+# STEP 1: Import necessary libraries
+"""
+First, we need to import the required libraries:
+- numpy for numerical operations
+- matplotlib.pyplot for visualization
+- PolynomialFeatures from sklearn.preprocessing to create polynomial features
+- LinearRegression from sklearn.linear_model for the regression model
+- make_pipeline from sklearn.pipeline to simplify our workflow
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+from sklearn.pipeline import make_pipeline
+
+print("✓ Task 1 Complete: Libraries imported successfully")
+
+# STEP 2: Generate non-linear sample data
+"""
+Generate sample data with a non-linear pattern:
+- Use numpy's random seed for reproducibility (set to 42)
+- Create 100 random X values between -3 and 3
+- Generate y values using the formula: y = 0.5 * X^2 + X + 2 + random noise
+"""
+
+np.random.seed(42)
+X = 6 * np.random.rand(100, 1) - 3
+y = 0.5 * X**2 + X + 2 + np.random.randn(100, 1) * 0.5
+
+print("✓ Task 2 Complete: Non-linear sample data generated")
+
+# STEP 3: Visualize the raw data
+"""
+Create a scatter plot of the data:
+- Set figure size to (10, 6)
+- Use plt.scatter() to plot X vs y
+- Add title, labels, and grid
+"""
+
+plt.figure(figsize=(10, 6))
+plt.scatter(X, y, alpha=0.8)
+plt.title('Non-linear Data for Polynomial Regression')
+plt.xlabel('X')
+plt.ylabel('y')
+plt.grid(True)
+plt.show()
+
+print("✓ Task 3 Complete: Raw data visualized")
+
+# STEP 4: Create and compare polynomial regression models
+"""
+Now let's create and compare polynomial regression models of different degrees:
+- Create a list of degrees to test [1, 2, 4, 7]
+- Generate test points using np.linspace(-3, 3, 100)
+- For each degree:
+  - Create a polynomial regression model using make_pipeline
+  - Fit the model to the training data
+  - Make predictions
+  - Plot the resulting curve
+"""
+
+# Create a list of degrees to test
+degrees = [1, 2, 4, 7]
+colors = ['blue', 'green', 'red', 'purple']
+
+print("✓ Task 4 Complete: Created list of polynomial degrees to test [1, 2, 4, 7]")
+
+# Create test points for smooth curves
+X_test = np.linspace(-3, 3, 100).reshape(-1, 1)
+
+# Create a new figure
+plt.figure(figsize=(12, 8))
+
+# Plot the original data
+plt.scatter(X, y, s=30, alpha=0.5, label='Training data')
+
+# Create and plot polynomial regression models of different degrees
+for i, degree in enumerate(degrees):
+    # Create and fit the model
+    model = make_pipeline(
+        PolynomialFeatures(degree=degree, include_bias=True),
+        LinearRegression()
+    )
+    model.fit(X, y)
+    
+    # Make predictions
+    y_pred = model.predict(X_test)
+    
+    # Plot the polynomial curve
+    plt.plot(X_test, y_pred, color=colors[i], label=f'Degree {degree}', linewidth=2)
+    
+    # Calculate and print R² score
+    train_score = model.score(X, y)
+    print(f"Degree {degree} - R² score: {train_score:.4f}")
+
+print("✓ Task 5 Complete: Polynomial regression models implemented and compared")
+
+# STEP 5: Add final touches to the plot
+"""
+Complete your visualization:
+- Add a title 'Polynomial Regression with Different Degrees'
+- Add x and y labels
+- Add a legend
+- Add a grid
+- Set y-axis limits from -2 to 10
+- Display the plot
+"""
+
+plt.title('Polynomial Regression with Different Degrees')
+plt.xlabel('X')
+plt.ylabel('y')
+plt.legend()
+plt.grid(True)
+plt.ylim(-2, 10)
+plt.show()
+
+print("✓ Task 6 Complete: Visualization with final touches added")
+
+print("\n✓✓✓ All Tasks Complete! Polynomial regression models generated!") 

@@ -65,23 +65,40 @@
             border-right: 1px solid var(--border-color);
             overflow-y: auto;
             transition: width 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
         
         .tasks-header {
             padding: 15px;
             border-bottom: 1px solid var(--border-color);
             font-weight: bold;
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-dark);
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: ns-resize;
         }
         
         .task-list {
             list-style: none;
+            overflow-y: auto;
         }
         
         .task-item {
-            padding: 15px;
+            padding: 12px;
             border-bottom: 1px solid var(--border-color);
             cursor: pointer;
             transition: background-color 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .task-description {
+            font-size: 0.9rem;
+            line-height: 1.4;
         }
         
         .task-item:hover {
@@ -95,6 +112,181 @@
         .task-item.completed::before {
             content: '✓ ';
             color: var(--accent-green);
+        }
+        
+        .tip-item {
+            padding: 12px 12px 15px 12px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: rgba(102, 217, 239, 0.1);
+            border-left: 3px solid var(--accent-blue);
+            margin: 8px 0;
+            position: relative;
+            font-size: 0.85rem;
+        }
+        
+        .tip-item::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 18px;
+        }
+        
+        .tip-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .tip-icon {
+            font-size: 18px;
+            margin-right: 10px;
+        }
+        
+        .required-badge {
+            background-color: var(--accent-purple);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            margin-left: 8px;
+            margin-right: 8px;
+        }
+        
+        .tip-title {
+            color: var(--accent-blue);
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+            flex: 1;
+        }
+        
+        .tip-expand-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .tip-content {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            padding-left: 28px;
+        }
+        
+        .tip-interaction {
+            margin-top: 15px;
+            padding-left: 28px;
+        }
+        
+        .tip-quiz-btn {
+            background-color: var(--accent-purple);
+            color: #fff;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background-color 0.2s;
+        }
+        
+        .tip-quiz-btn:hover {
+            background-color: #8a6fd0;
+        }
+        
+        .tip-quiz-container {
+            background-color: rgba(174, 129, 255, 0.1);
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 8px;
+            font-size: 0.85rem;
+        }
+        
+        .tip-quiz-question {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--accent-purple);
+            font-size: 0.9rem;
+        }
+        
+        .tip-quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+        }
+        
+        .tip-quiz-options label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .tip-quiz-options input {
+            margin-right: 8px;
+        }
+        
+        .tip-quiz-check {
+            background-color: var(--accent-blue);
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .tip-quiz-explanation {
+            margin-top: 10px;
+            padding: 8px;
+            background-color: rgba(166, 226, 46, 0.1);
+            border-left: 3px solid var(--accent-green);
+            font-size: 0.8rem;
+        }
+        
+        .quiz-completed {
+            border-left-color: var(--accent-purple);
+        }
+        
+        .quiz-completed::after {
+            content: '✓';
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            color: var(--accent-purple);
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .quiz-completed .tip-expand-btn::after {
+            content: " (Completed)";
+            font-size: 0.75rem;
+            color: var(--accent-green);
+            margin-left: 4px;
+        }
+        
+        .task-item.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            position: relative;
+        }
+        
+        .task-item.locked::after {
+            content: '🔒';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 18px;
+        }
+        
+        .task-item.quiz-required::after {
+            content: '💭';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 18px;
         }
         
         .hint-btn {
@@ -118,7 +310,16 @@
             padding: 8px;
             background-color: rgba(0, 0, 0, 0.2);
             border-left: 3px solid var(--accent-orange);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+        }
+        
+        .quiz-completed .tip-content,
+        .quiz-completed .tip-interaction {
+            display: none;
+        }
+        
+        .quiz-completed .tip-header {
+            margin-bottom: 0;
         }
         
         /* Main Content - Code Editor */
@@ -159,6 +360,10 @@
             transition: height 0.3s ease;
         }
         
+        .output-container.resizing {
+            transition: none; /* Disable transitions during resize for instant feedback */
+        }
+        
         .output-header {
             padding: 10px;
             background-color: var(--bg-dark);
@@ -166,6 +371,55 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            cursor: ns-resize; /* Add cursor indicator for resizing */
+            position: relative;
+        }
+        
+        .output-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background-color: var(--border-color);
+            cursor: ns-resize;
+        }
+        
+        .output-header:hover::before {
+            background-color: var(--accent-orange);
+        }
+        
+        .resize-handle-icon {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 0;
+            color: var(--accent-orange);
+            font-size: 12px;
+            line-height: 5px;
+            height: 5px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .output-header:hover .resize-handle-icon {
+            opacity: 1;
+        }
+        
+        .output-header div {
+            display: flex;
+            gap: 5px;
+        }
+        
+        #toggle-output {
+            background-color: var(--accent-orange);
+            color: #000;
+        }
+        
+        #toggle-output:hover {
+            background-color: #ffae4d;
         }
         
         .output {
@@ -181,11 +435,62 @@
             margin: 10px 0;
         }
         
+        .progress-bar {
+            height: 5px;
+            width: 100%;
+            background-color: var(--border-color);
+            margin: 0 0 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--accent-green);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .section-progress-fill {
+            height: 100%;
+            background-color: var(--accent-blue);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-container {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 2px;
+        }
+        
+        .progress-label span {
+            opacity: 0.8;
+        }
+        
+        .progress-label .task-label {
+            color: var(--accent-green);
+        }
+        
+        .progress-label .section-label {
+            color: var(--accent-blue);
+        }
+        
         .controls {
             display: flex;
+            flex-direction: column;
             padding: 10px;
             background-color: var(--bg-dark);
             border-top: 1px solid var(--border-color);
+        }
+        
+        .button-container {
+            display: flex;
+            width: 100%;
         }
         
         .btn {
@@ -226,18 +531,15 @@
             background-color: #ff5a97;
         }
         
-        .progress-bar {
-            height: 5px;
-            width: 100%;
-            background-color: var(--border-color);
-            margin: 0 0 10px 0;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background-color: var(--accent-green);
-            width: 0%;
-            transition: width 0.3s ease;
+        .status-bar {
+            padding: 5px 10px;
+            background-color: var(--bg-darker);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            height: 25px;
         }
         
         /* Right Sidebar - Tools Reference */
@@ -247,17 +549,31 @@
             border-left: 1px solid var(--border-color);
             overflow-y: auto;
             transition: width 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
         
         .tools-header {
             padding: 15px;
             border-bottom: 1px solid var(--border-color);
             font-weight: bold;
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-dark);
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: ns-resize;
         }
         
         .tools-search {
             padding: 10px;
             border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 51px;
+            background-color: var(--bg-dark);
+            z-index: 10;
         }
         
         .search-input {
@@ -335,18 +651,6 @@
             text-decoration: underline;
         }
         
-        /* Status bar */
-        .status-bar {
-            padding: 5px 10px;
-            background-color: var(--bg-darker);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
-            height: 25px;
-        }
-        
         /* Responsive Design */
         @media (max-width: 1200px) {
             .tasks-panel, .tools-panel {
@@ -421,6 +725,69 @@
         .fade-in {
             animation: fadeIn 0.3s ease-in-out;
         }
+        
+        @keyframes taskCompletedAnimation {
+            0% { background-color: var(--bg-dark); }
+            25% { background-color: rgba(166, 226, 46, 0.3); }
+            75% { background-color: rgba(166, 226, 46, 0.3); }
+            100% { background-color: var(--bg-dark); }
+        }
+        
+        .task-completed-animation {
+            animation: taskCompletedAnimation 1.5s ease-in-out;
+        }
+        
+        /* Panel resize/collapse styles */
+        .panel-collapse-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+        }
+        
+        .panel-resize-handle {
+            position: absolute;
+            width: 5px;
+            top: 0;
+            bottom: 0;
+            cursor: ew-resize;
+            z-index: 20;
+            background-color: transparent;
+        }
+        
+        .panel-resize-handle:hover {
+            background-color: var(--accent-orange);
+        }
+        
+        .tasks-panel .panel-resize-handle {
+            right: 0;
+        }
+        
+        .tools-panel .panel-resize-handle {
+            left: 0;
+        }
+        
+        .panel-collapsed {
+            width: 50px;
+            overflow: hidden;
+        }
+        
+        .panel-collapsed .tasks-header,
+        .panel-collapsed .tools-header {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            height: auto;
+            justify-content: center;
+            padding: 15px 0;
+        }
+        
+        .panel-collapsed .task-list,
+        .panel-collapsed .tool-list,
+        .panel-collapsed .tools-search {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -431,8 +798,12 @@
     
     <div class="main-container">
         <!-- Left Sidebar - Tasks Panel -->
-        <div class="tasks-panel">
-            <div class="tasks-header">Tasks</div>
+        <div class="tasks-panel" id="tasks-panel">
+            <div class="tasks-header">
+                Tasks
+                <button class="panel-collapse-btn" id="tasks-collapse-btn">◀</button>
+            </div>
+            <div class="panel-resize-handle" id="tasks-resize-handle"></div>
             <ul class="task-list" id="task-list">
                 <!-- Tasks will be loaded dynamically -->
             </ul>
@@ -449,18 +820,36 @@
             <div class="output-container">
                 <div class="output-header">
                     <span>Output</span>
-                    <button class="btn" id="clear-output">Clear</button>
+                    <div class="resize-handle-icon">≡</div>
+                    <div>
+                        <button class="btn" id="clear-output">Clear</button>
+                    </div>
                 </div>
                 <div class="output" id="output-area">Output will appear here...</div>
             </div>
             
             <div class="controls">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progress-fill"></div>
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span class="task-label">Task Progress</span>
+                        <span id="task-percentage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="progress-label">
+                        <span class="section-label">Tutorial Progress</span>
+                        <span id="section-percentage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="section-progress-fill" id="section-progress-fill"></div>
+                    </div>
                 </div>
-                <button class="btn restart-btn" id="restart-section">Restart Section</button>
-                <button class="btn run-btn" id="run-btn">Run Code</button>
-                <button class="btn next-btn" id="next-section">Next Section</button>
+                <div class="button-container">
+                    <button class="btn restart-btn" id="restart-section">Restart Section</button>
+                    <button class="btn run-btn" id="run-btn">Run Code</button>
+                    <button class="btn next-btn" id="next-section">Next Section</button>
+                </div>
             </div>
             
             <div class="status-bar">
@@ -470,16 +859,15 @@
         </div>
         
         <!-- Right Sidebar - Tools Reference -->
-        <div class="tools-panel">
-            <div class="tools-header">Tools Reference</div>
+        <div class="tools-panel" id="tools-panel">
+            <div class="tools-header">
+                Tools Reference
+                <button class="panel-collapse-btn" id="tools-collapse-btn">▶</button>
+            </div>
+            <div class="panel-resize-handle" id="tools-resize-handle"></div>
             
             <div class="tools-search">
                 <input type="text" id="tools-search" class="search-input" placeholder="Search tools...">
-            </div>
-            
-            <div class="tools-filter">
-                <button class="filter-btn active" data-filter="libraries">Libraries</button>
-                <button class="filter-btn" data-filter="methods">Methods</button>
             </div>
             
             <ul class="tool-list" id="tool-list">
@@ -531,7 +919,48 @@
             let isExecuting = false;
             let currentTutorial = null;
             let currentSection = null;
-            let completedTasks = new Set();
+            
+            // Store completed tasks and quizzes by section ID
+            const completedTasksBySection = new Map();
+            const completedQuizzesBySection = new Map();
+            
+            // Helper functions to get/set completed items for current section
+            function getCompletedTasks() {
+                if (!currentSection) return new Set();
+                if (!completedTasksBySection.has(currentSection.id)) {
+                    completedTasksBySection.set(currentSection.id, new Set());
+                }
+                return completedTasksBySection.get(currentSection.id);
+            }
+            
+            function getCompletedQuizzes() {
+                if (!currentSection) return new Set();
+                if (!completedQuizzesBySection.has(currentSection.id)) {
+                    completedQuizzesBySection.set(currentSection.id, new Set());
+                    
+                    // If we have window.completedQuizzes, migrate any relevant quizzes to this section
+                    // But only if they actually belong to this section (by ID)
+                    if (window.completedQuizzes && currentSection.tips) {
+                        const currentSectionQuizIds = currentSection.tips
+                            .filter(tip => tip.type === 'concept')
+                            .map(tip => tip.id);
+                        
+                        for (const quizId of window.completedQuizzes) {
+                            // Only migrate quizzes that belong to this specific section
+                            if (currentSectionQuizIds.includes(quizId)) {
+                                completedQuizzesBySection.get(currentSection.id).add(quizId);
+                            }
+                        }
+                    }
+                }
+                return completedQuizzesBySection.get(currentSection.id);
+            }
+            
+            // Resize variables
+            let isResizing = false;
+            let startY = 0;
+            let startHeight = 0;
+            let maxResizeHeight = 0;
             
             // Reference to DOM elements
             const sectionTitle = document.getElementById('section-title');
@@ -539,13 +968,89 @@
             const taskList = document.getElementById('task-list');
             const toolList = document.getElementById('tool-list');
             const progressFill = document.getElementById('progress-fill');
+            const sectionProgressFill = document.getElementById('section-progress-fill');
             const runBtn = document.getElementById('run-btn');
             const nextSectionBtn = document.getElementById('next-section');
             const restartSectionBtn = document.getElementById('restart-section');
             const clearOutputBtn = document.getElementById('clear-output');
             const toolSearch = document.getElementById('tools-search');
-            const filterBtns = document.querySelectorAll('.filter-btn');
             const executionTime = document.getElementById('execution-time');
+            const taskPercentageEl = document.getElementById('task-percentage');
+            const sectionPercentageEl = document.getElementById('section-percentage');
+            
+            // Ensure we have the correct DOM elements when resizing
+            const outputHeader = document.querySelector('.output-header');
+            const outputContainer = document.querySelector('.output-container');
+            
+            // Mouse events for desktop
+            outputHeader.addEventListener('mousedown', startResizing);
+            
+            // Touch events for mobile
+            outputHeader.addEventListener('touchstart', (e) => {
+                const touch = e.touches[0];
+                startResizing({ clientY: touch.clientY });
+            });
+            
+            function startResizing(e) {
+                isResizing = true;
+                startY = e.clientY;
+                startHeight = outputContainer.offsetHeight;
+                
+                // Prevent text selection during resize
+                document.body.style.userSelect = 'none';
+                
+                // Disable transitions during resize for better performance
+                outputContainer.classList.add('resizing');
+                
+                // Cache the max height value to avoid recalculating during resize
+                maxResizeHeight = document.querySelector('.editor-panel').offsetHeight - 100;
+                
+                // Add event listeners for movement and release
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('touchmove', handleTouchMove, { passive: false });
+                document.addEventListener('mouseup', stopResizing);
+                document.addEventListener('touchend', stopResizing);
+                document.addEventListener('touchcancel', stopResizing);
+            }
+            
+            // Use separate low-level handlers for mouse/touch events
+            function handleMouseMove(e) {
+                if (!isResizing) return;
+                e.preventDefault();
+                // Direct update for maximum performance
+                resizeOutput(e.clientY);
+            }
+            
+            function handleTouchMove(e) {
+                if (!isResizing) return;
+                e.preventDefault(); // Prevent scrolling while resizing
+                const touch = e.touches[0];
+                // Direct update for maximum performance
+                resizeOutput(touch.clientY);
+            }
+            
+            function resizeOutput(clientY) {
+                // Calculate new height (inverted drag direction - moving up increases height)
+                const deltaY = startY - clientY;
+                const newHeight = Math.max(32, startHeight + deltaY); // Minimum height of 32px (header)
+                
+                // Apply the new height directly to style for better performance
+                outputContainer.style.height = `${Math.min(newHeight, maxResizeHeight)}px`;
+            }
+            
+            function stopResizing() {
+                if (isResizing) {
+                    isResizing = false;
+                    // Re-enable transitions after resize
+                    outputContainer.classList.remove('resizing');
+                    document.body.style.userSelect = '';
+                    document.removeEventListener('mousemove', handleMouseMove);
+                    document.removeEventListener('touchmove', handleTouchMove);
+                    document.removeEventListener('mouseup', stopResizing);
+                    document.removeEventListener('touchend', stopResizing);
+                    document.removeEventListener('touchcancel', stopResizing);
+                }
+            }
             
             // Load tutorial data
             async function loadTutorial(tutorialId) {
@@ -577,14 +1082,15 @@
                     sectionTitle.textContent = sectionData.title;
                     editor.setValue(sectionData.code || '');
                     
-                    // Load tasks
+                    // Load tasks and tips
                     taskList.innerHTML = '';
                     if (sectionData.tasks && sectionData.tasks.length > 0) {
                         sectionData.tasks.forEach(task => {
-                            const isCompleted = completedTasks.has(task.id);
+                            const isCompleted = getCompletedTasks().has(task.id);
                             
                             const taskItem = document.createElement('li');
                             taskItem.className = `task-item ${isCompleted ? 'completed' : ''}`;
+                            taskItem.dataset.taskId = task.id;
                             taskItem.innerHTML = `
                                 <div class="task-description">${task.description}</div>
                                 <button class="hint-btn">Show Hint</button>
@@ -601,6 +1107,147 @@
                                 hintText.style.display = isVisible ? 'none' : 'block';
                                 hintBtn.textContent = isVisible ? 'Show Hint' : 'Hide Hint';
                             });
+                            
+                            // Add relevant tip after this task if it exists
+                            if (sectionData.tips && sectionData.tips.length > 0) {
+                                const relatedTips = sectionData.tips.filter(tip => tip.position === `after-${task.id}`);
+                                
+                                relatedTips.forEach(tip => {
+                                    const tipItem = document.createElement('li');
+                                    tipItem.className = 'tip-item fade-in';
+                                    
+                                    // Determine if this is a concept or explanation tip
+                                    const tipType = tip.type || 'explanation';
+                                    const tipIcon = tipType === 'concept' ? '🧠' : '💡';
+                                    
+                                    tipItem.innerHTML = `
+                                        <div class="tip-header">
+                                            <span class="tip-icon">${tipIcon}</span>
+                                            <div class="tip-title">${tip.title}</div>
+                                            ${tipType === 'concept' ? '<span class="required-badge">Required</span>' : ''}
+                                            <button class="tip-expand-btn">▾</button>
+                                        </div>
+                                        <div class="tip-content">${tip.content}</div>
+                                        ${tipType === 'concept' ? 
+                                            `<div class="tip-interaction">
+                                                <button class="tip-quiz-btn">Complete Quiz to Continue</button>
+                                                <div class="tip-quiz-container" style="display:none;">
+                                                    <div class="tip-quiz-question">What happens when you increase the complexity of a model too much?</div>
+                                                    <div class="tip-quiz-options">
+                                                        <label><input type="radio" name="quiz-${tip.id}" value="overfitting"> It may start overfitting to noise</label>
+                                                        <label><input type="radio" name="quiz-${tip.id}" value="underfitting"> It will always underfit the data</label>
+                                                        <label><input type="radio" name="quiz-${tip.id}" value="nothing"> Nothing changes</label>
+                                                    </div>
+                                                    <button class="tip-quiz-check">Check Answer</button>
+                                                </div>
+                                            </div>` : ''
+                                        }
+                                    `;
+                                    taskList.appendChild(tipItem);
+                                    
+                                    // Add interactivity to the tip
+                                    const expandBtn = tipItem.querySelector('.tip-expand-btn');
+                                    const tipContent = tipItem.querySelector('.tip-content');
+                                    
+                                    // Check if this quiz was previously completed
+                                    const isQuizCompleted = getCompletedQuizzes().has(tip.id);
+                                    if (isQuizCompleted && tipType === 'concept') {
+                                        tipItem.dataset.quizCompleted = 'true';
+                                        tipItem.classList.add('quiz-completed');
+                                        // Collapse the content for completed quizzes
+                                        tipContent.style.display = 'none';
+                                    }
+                                    
+                                    // Add quiz functionality if it exists
+                                    const quizBtn = tipItem.querySelector('.tip-quiz-btn');
+                                    if (quizBtn) {
+                                        const quizContainer = tipItem.querySelector('.tip-quiz-container');
+                                        const checkBtn = tipItem.querySelector('.tip-quiz-check');
+                                        
+                                        // Store the associated task ID for quiz completion tracking
+                                        const associatedTaskId = tip.position.replace('after-', '');
+                                        const nextTaskIndex = currentSection.tasks.findIndex(t => t.id === associatedTaskId) + 1;
+                                        const nextTaskId = nextTaskIndex < currentSection.tasks.length ? 
+                                                          currentSection.tasks[nextTaskIndex].id : null;
+                                        
+                                        // Flag to track if this quiz has been completed
+                                        tipItem.dataset.quizCompleted = 'false';
+                                        
+                                        quizBtn.addEventListener('click', () => {
+                                            quizContainer.style.display = 'block';
+                                            quizBtn.style.display = 'none';
+                                        });
+                                        
+                                        if (checkBtn) {
+                                            checkBtn.addEventListener('click', () => {
+                                                const selectedOption = tipItem.querySelector('input[name^="quiz-"]:checked');
+                                                if (selectedOption) {
+                                                    const isCorrect = selectedOption.value === 'overfitting';
+                                                    checkBtn.textContent = isCorrect ? 'Correct! ✓' : 'Try Again ✗';
+                                                    checkBtn.style.backgroundColor = isCorrect ? 'var(--accent-green)' : 'var(--accent-pink)';
+                                                    checkBtn.style.color = '#fff';
+                                                    
+                                                    // Mark quiz as completed if correct and update the associated task
+                                                    if (isCorrect) {
+                                                        tipItem.dataset.quizCompleted = 'true';
+                                                        tipItem.classList.add('quiz-completed');
+                                                        
+                                                        // Store quiz completion specifically for this section
+                                                        getCompletedQuizzes().add(tip.id);
+                                                        
+                                                        // Also track in global window.completedQuizzes for reference
+                                                        // but we'll be careful about how we use this
+                                                        if (!window.completedQuizzes) {
+                                                            window.completedQuizzes = new Set();
+                                                        }
+                                                        window.completedQuizzes.add(tip.id);
+                                                        
+                                                        // Show explanation and then auto-collapse after delay
+                                                        const explanation = document.createElement('div');
+                                                        explanation.className = 'tip-quiz-explanation';
+                                                        explanation.textContent = 'Great job! As model complexity increases, it can start fitting to noise in the data rather than the underlying pattern.';
+                                                        quizContainer.appendChild(explanation);
+                                                        
+                                                        // Auto-collapse after showing explanation
+                                                        setTimeout(() => {
+                                                            // Collapse the content but keep the header visible
+                                                            tipContent.style.display = 'none';
+                                                            // Update the expand button
+                                                            expandBtn.textContent = '▾';
+                                                        }, 3000);
+                                                        
+                                                        // Check if this makes the next task ready to be attempted
+                                                        updateTaskAvailability();
+                                                        updateProgress();
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        
+                                        // Special behavior for completed quizzes
+                                        expandBtn.addEventListener('click', () => {
+                                            // If quiz is completed, only toggle the tip content, not the quiz container
+                                            if (tipItem.dataset.quizCompleted === 'true') {
+                                                const isExpanded = tipContent.style.display !== 'none';
+                                                tipContent.style.display = isExpanded ? 'none' : 'block';
+                                                expandBtn.textContent = isExpanded ? '▾' : '▴';
+                                            } else {
+                                                // Regular toggle behavior for incomplete quizzes
+                                                const isExpanded = tipContent.style.display !== 'none';
+                                                tipContent.style.display = isExpanded ? 'none' : 'block';
+                                                expandBtn.textContent = isExpanded ? '▾' : '▴';
+                                            }
+                                        });
+                                    } else {
+                                        // For non-quiz tips, just toggle the content visibility
+                                        expandBtn.addEventListener('click', () => {
+                                            const isExpanded = tipContent.style.display !== 'none';
+                                            tipContent.style.display = isExpanded ? 'none' : 'block';
+                                            expandBtn.textContent = isExpanded ? '▾' : '▴';
+                                        });
+                                    }
+                                });
+                            }
                         });
                     }
                     
@@ -624,6 +1271,7 @@
                     outputArea.innerHTML = 'Output will appear here...';
                     
                     updateProgress();
+                    updateTaskAvailability();
                 } catch (error) {
                     console.error('Error loading section:', error);
                     outputArea.innerHTML = 'Failed to load section data.';
@@ -636,6 +1284,21 @@
                 
                 const code = editor.getValue();
                 if (!code.trim()) return;
+                
+                // Check if the current task is locked
+                const currentTaskIndex = getCurrentTaskIndex();
+                if (currentTaskIndex !== null) {
+                    const taskElement = taskList.querySelectorAll('.task-item')[currentTaskIndex];
+                    if (taskElement && (taskElement.classList.contains('locked') || taskElement.classList.contains('quiz-required'))) {
+                        // Check if it's a quiz-required task and provide a clear message
+                        if (taskElement.classList.contains('quiz-required')) {
+                            outputArea.innerHTML = 'You need to complete the quiz before attempting this task!';
+                        } else {
+                            outputArea.innerHTML = 'You need to complete previous tasks first!';
+                        }
+                        return;
+                    }
+                }
                 
                 isExecuting = true;
                 runBtn.textContent = 'Running...';
@@ -671,53 +1334,180 @@
                 }
             }
             
+            // Get the index of the current task in progress
+            function getCurrentTaskIndex() {
+                if (!currentSection || !currentSection.tasks) return null;
+                
+                // Find the first uncompleted task
+                for (let i = 0; i < currentSection.tasks.length; i++) {
+                    if (!getCompletedTasks().has(currentSection.tasks[i].id)) {
+                        return i;
+                    }
+                }
+                
+                // If all tasks are completed, return the last task
+                return currentSection.tasks.length - 1;
+            }
+            
             // Check if tasks are completed based on output
             function checkTaskCompletion(output) {
                 if (!currentSection || !currentSection.tasks) return;
                 
-                let allCompleted = true;
+                let allTasksCompleted = true;
+                let progressChanged = false;
+                
+                // Find all task elements
+                const taskElements = Array.from(taskList.querySelectorAll('.task-item'));
                 
                 currentSection.tasks.forEach((task, index) => {
-                    const taskElement = taskList.children[index];
+                    // Find the task element with matching task ID
+                    const taskElement = taskElements.find(el => el.dataset.taskId === task.id);
+                    if (!taskElement) return;
                     
+                    // Check if task is already completed
+                    if (getCompletedTasks().has(task.id)) return;
+                    
+                    // Check if previous task and any required quizzes are completed
+                    if (index > 0) {
+                        const prevTaskId = currentSection.tasks[index - 1].id;
+                        const isPrevTaskCompleted = getCompletedTasks().has(prevTaskId);
+                        
+                        // Check if a quiz is required before this task
+                        const requiredQuizTip = currentSection.tips ? 
+                            currentSection.tips.find(tip => tip.position === `after-${prevTaskId}` && tip.type === 'concept') : null;
+                        
+                        const isQuizCompleted = requiredQuizTip ? 
+                            getCompletedQuizzes().has(requiredQuizTip.id) : true;
+                        
+                        if (!isPrevTaskCompleted || !isQuizCompleted) {
+                            allTasksCompleted = false;
+                            return;
+                        }
+                    }
+                    
+                    // Check if task is completed
                     if (task.validation && (
                         output.includes(task.validation) || 
                         editor.getValue().includes(task.validation)
                     )) {
-                        completedTasks.add(task.id);
+                        getCompletedTasks().add(task.id);
                         taskElement.classList.add('completed');
+                        progressChanged = true;
+                        
+                        // Show celebration effect for newly completed task
+                        taskElement.classList.add('task-completed-animation');
+                        setTimeout(() => {
+                            taskElement.classList.remove('task-completed-animation');
+                        }, 1500);
                     } else {
-                        allCompleted = false;
+                        allTasksCompleted = false;
                     }
                 });
                 
-                // Update progress
-                updateProgress();
+                if (progressChanged) {
+                    // Update progress and task availability
+                    updateProgress();
+                    updateTaskAvailability();
+                    
+                    // Auto-scroll to the next uncompleted task
+                    const nextTaskIndex = getCurrentTaskIndex();
+                    if (nextTaskIndex !== null) {
+                        const nextTaskId = currentSection.tasks[nextTaskIndex].id;
+                        const nextTaskElement = taskElements.find(el => el.dataset.taskId === nextTaskId);
+                        if (nextTaskElement) {
+                            nextTaskElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }
+                }
                 
                 // If all tasks are completed, enable next section button
-                nextSectionBtn.disabled = !allCompleted;
+                nextSectionBtn.disabled = !allTasksCompleted;
             }
             
             // Update progress bar
             function updateProgress() {
                 if (!currentTutorial || !currentSection) return;
                 
-                // Calculate completion percentage
+                // Calculate task completion percentage
                 const totalTasks = currentSection.tasks ? currentSection.tasks.length : 0;
-                const completedCount = [...completedTasks].filter(id => 
+                const completedCount = [...getCompletedTasks()].filter(id => 
                     currentSection.tasks.some(task => task.id === id)
                 ).length;
                 
-                const percentage = totalTasks > 0 ? (completedCount / totalTasks) * 100 : 0;
-                progressFill.style.width = `${percentage}%`;
+                // Include quiz completion in progress calculation
+                const quizCount = currentSection.tips ? currentSection.tips.filter(tip => tip.type === 'concept').length : 0;
+                const completedQuizCount = [...getCompletedQuizzes()].filter(id => 
+                    currentSection.tips && currentSection.tips.some(tip => tip.id === id && tip.type === 'concept')
+                ).length;
+                
+                // Adjust task percentage calculation to include quizzes
+                const totalItems = totalTasks + quizCount;
+                const completedItems = completedCount + completedQuizCount;
+                const taskPercentage = totalItems > 0 ? (completedItems / totalItems) * 100 : 0;
+                
+                progressFill.style.width = `${taskPercentage}%`;
+                taskPercentageEl.textContent = `${Math.round(taskPercentage)}%`;
+                
+                // Calculate section completion percentage
+                if (currentTutorial.sections && currentTutorial.sections.length > 0) {
+                    const currentSectionIndex = currentTutorial.sections.findIndex(s => s.id === currentSection.id);
+                    const sectionPercentage = ((currentSectionIndex + (taskPercentage / 100)) / currentTutorial.sections.length) * 100;
+                    sectionProgressFill.style.width = `${sectionPercentage}%`;
+                    sectionPercentageEl.textContent = `${Math.round(sectionPercentage)}%`;
+                }
             }
             
-            // Filter tools
-            function filterTools(filter) {
-                // Implement tool filtering logic here
-                filterBtns.forEach(btn => {
-                    btn.classList.toggle('active', btn.dataset.filter === filter);
+            // Check if tasks are available based on prerequisites
+            function updateTaskAvailability() {
+                if (!currentSection || !currentSection.tasks) return;
+                
+                // Get all task elements
+                const taskElements = taskList.querySelectorAll('.task-item');
+                
+                // For each task, check if prerequisites are met
+                currentSection.tasks.forEach((task, index) => {
+                    if (index === 0) return; // First task is always available
+                    
+                    const taskElement = taskElements[index];
+                    if (!taskElement) return;
+                    
+                    // Check if previous task is completed
+                    const prevTaskId = currentSection.tasks[index - 1].id;
+                    const isPrevTaskCompleted = getCompletedTasks().has(prevTaskId);
+                    
+                    // Check if a quiz is required before this task
+                    const requiredQuizTip = currentSection.tips ? 
+                        currentSection.tips.find(tip => tip.position === `after-${prevTaskId}` && tip.type === 'concept') : null;
+                    
+                    const isQuizCompleted = requiredQuizTip ? 
+                        getCompletedQuizzes().has(requiredQuizTip.id) : true;
+                    
+                    // Update task status
+                    if (!isPrevTaskCompleted) {
+                        taskElement.classList.add('locked');
+                        taskElement.classList.remove('quiz-required');
+                        taskElement.setAttribute('title', 'Complete the previous task first');
+                    } else if (requiredQuizTip && !isQuizCompleted) {
+                        taskElement.classList.remove('locked');
+                        taskElement.classList.add('quiz-required');
+                        taskElement.setAttribute('title', 'Complete the quiz first');
+                    } else {
+                        taskElement.classList.remove('locked');
+                        taskElement.classList.remove('quiz-required');
+                        taskElement.removeAttribute('title');
+                    }
                 });
+                
+                // Update the next section button
+                const isLastTask = getCompletedTasks().has(currentSection.tasks[currentSection.tasks.length - 1].id);
+                
+                // Check if all required quizzes are completed
+                const requiredQuizzes = currentSection.tips ? 
+                    currentSection.tips.filter(tip => tip.type === 'concept') : [];
+                const allQuizzesCompleted = requiredQuizzes.length === 0 || 
+                    requiredQuizzes.every(quiz => getCompletedQuizzes().has(quiz.id));
+                
+                nextSectionBtn.disabled = !(isLastTask && allQuizzesCompleted);
             }
             
             // Event listeners
@@ -733,16 +1523,52 @@
                 
                 const sectionIndex = currentTutorial.sections.findIndex(s => s.id === currentSection.id);
                 if (sectionIndex < currentTutorial.sections.length - 1) {
+                    // Clear completed tasks and quizzes before loading the next section
+                    const completedTasks = getCompletedTasks();
+                    const completedQuizzes = getCompletedQuizzes();
+                    
+                    completedTasks.clear();
+                    completedQuizzes.clear();
+                    
+                    // Don't automatically migrate quizzes between sections
+                    if (window.completedQuizzes) {
+                        // Store current section's quiz IDs before clearing
+                        const currentSectionQuizIds = currentSection.tips
+                            ? currentSection.tips
+                                .filter(tip => tip.type === 'concept')
+                                .map(tip => tip.id)
+                            : [];
+                            
+                        // Remove this section's quizzes from the global window.completedQuizzes
+                        currentSectionQuizIds.forEach(id => {
+                            window.completedQuizzes.delete(id);
+                        });
+                    }
+                    
                     loadSection(currentTutorial.sections[sectionIndex + 1].id);
                 }
             });
             
             restartSectionBtn.addEventListener('click', () => {
                 if (currentSection) {
-                    // Reset just this section
-                    currentSection.tasks.forEach(task => {
-                        completedTasks.delete(task.id);
-                    });
+                    // Reset this section's tasks and quizzes
+                    const completedTasks = getCompletedTasks();
+                    const completedQuizzes = getCompletedQuizzes();
+                    
+                    completedTasks.clear();
+                    completedQuizzes.clear();
+                    
+                    // Also remove this section's quizzes from the global window.completedQuizzes
+                    if (window.completedQuizzes && currentSection.tips) {
+                        const sectionQuizIds = currentSection.tips
+                            .filter(tip => tip.type === 'concept')
+                            .map(tip => tip.id);
+                            
+                        sectionQuizIds.forEach(id => {
+                            window.completedQuizzes.delete(id);
+                        });
+                    }
+                    
                     loadSection(currentSection.id);
                 }
             });
@@ -763,11 +1589,96 @@
                 });
             });
             
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    filterTools(btn.dataset.filter);
-                });
+            // Panel collapse and resize functionality
+            const tasksPanel = document.getElementById('tasks-panel');
+            const toolsPanel = document.getElementById('tools-panel');
+            const tasksCollapseBtn = document.getElementById('tasks-collapse-btn');
+            const toolsCollapseBtn = document.getElementById('tools-collapse-btn');
+            const tasksResizeHandle = document.getElementById('tasks-resize-handle');
+            const toolsResizeHandle = document.getElementById('tools-resize-handle');
+            
+            // Toggle panel collapse
+            tasksCollapseBtn.addEventListener('click', () => {
+                tasksPanel.classList.toggle('panel-collapsed');
+                tasksCollapseBtn.textContent = tasksPanel.classList.contains('panel-collapsed') ? '▶' : '◀';
             });
+            
+            toolsCollapseBtn.addEventListener('click', () => {
+                toolsPanel.classList.toggle('panel-collapsed');
+                toolsCollapseBtn.textContent = toolsPanel.classList.contains('panel-collapsed') ? '◀' : '▶';
+            });
+            
+            // Panel resize functionality
+            let isResizingTasks = false;
+            let isResizingTools = false;
+            let startX = 0;
+            let startWidth = 0;
+            
+            // Tasks panel resize
+            tasksResizeHandle.addEventListener('mousedown', (e) => {
+                isResizingTasks = true;
+                startX = e.clientX;
+                startWidth = tasksPanel.offsetWidth;
+                
+                document.body.style.userSelect = 'none';
+                document.addEventListener('mousemove', handleTasksResize);
+                document.addEventListener('mouseup', stopTasksResize);
+            });
+            
+            function handleTasksResize(e) {
+                if (!isResizingTasks) return;
+                
+                const newWidth = startWidth + (e.clientX - startX);
+                if (newWidth >= 50 && newWidth <= 500) {
+                    tasksPanel.style.width = `${newWidth}px`;
+                    
+                    // Remove collapsed class if resizing from collapsed state
+                    if (tasksPanel.classList.contains('panel-collapsed') && newWidth > 50) {
+                        tasksPanel.classList.remove('panel-collapsed');
+                        tasksCollapseBtn.textContent = '◀';
+                    }
+                }
+            }
+            
+            function stopTasksResize() {
+                isResizingTasks = false;
+                document.body.style.userSelect = '';
+                document.removeEventListener('mousemove', handleTasksResize);
+                document.removeEventListener('mouseup', stopTasksResize);
+            }
+            
+            // Tools panel resize
+            toolsResizeHandle.addEventListener('mousedown', (e) => {
+                isResizingTools = true;
+                startX = e.clientX;
+                startWidth = toolsPanel.offsetWidth;
+                
+                document.body.style.userSelect = 'none';
+                document.addEventListener('mousemove', handleToolsResize);
+                document.addEventListener('mouseup', stopToolsResize);
+            });
+            
+            function handleToolsResize(e) {
+                if (!isResizingTools) return;
+                
+                const newWidth = startWidth - (e.clientX - startX);
+                if (newWidth >= 50 && newWidth <= 500) {
+                    toolsPanel.style.width = `${newWidth}px`;
+                    
+                    // Remove collapsed class if resizing from collapsed state
+                    if (toolsPanel.classList.contains('panel-collapsed') && newWidth > 50) {
+                        toolsPanel.classList.remove('panel-collapsed');
+                        toolsCollapseBtn.textContent = '▶';
+                    }
+                }
+            }
+            
+            function stopToolsResize() {
+                isResizingTools = false;
+                document.body.style.userSelect = '';
+                document.removeEventListener('mousemove', handleToolsResize);
+                document.removeEventListener('mouseup', stopToolsResize);
+            }
             
             // Initial load - Linear Regression tutorial
             loadTutorial('linear-regression');

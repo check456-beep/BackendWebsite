@@ -1,0 +1,57 @@
+# Understanding Linear Regression
+# ==============================
+
+"""
+In this section, you'll learn about linear regression by implementing 
+it from scratch using NumPy and visualizing the results.
+Follow the instructions below to build your understanding step by step.
+"""
+
+# STEP 1: Import necessary libraries
+"""
+First, we need to import NumPy for numerical operations and Matplotlib for visualization:
+- numpy for mathematical operations
+- matplotlib.pyplot for creating plots
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+print("✓ Task 1 Complete: Libraries imported successfully")
+
+# STEP 2: Generate sample data
+"""
+Let's create some sample data with a linear relationship:
+- Set the random seed to 42 for reproducibility
+- Create 100 random X values between 0 and 2
+- Generate y values using the formula: y = 4 + 3 * X + random noise
+"""
+
+np.random.seed(42)
+X = 2 * np.random.rand(100, 1)
+y = 4 + 3 * X + np.random.randn(100, 1)
+
+print("✓ Task 2 Complete: Sample data generated successfully")
+
+# STEP 3: Visualize the data
+"""
+Create a scatter plot to visualize the data:
+- Set figure size to (10, 6)
+- Plot X vs y using plt.scatter()
+- Add labels for axes
+- Add a title for the plot
+- Display the plot
+"""
+
+plt.figure(figsize=(10, 6))
+plt.scatter(X, y)
+plt.xlabel('X')
+plt.ylabel('y')
+plt.title('Sample Data for Linear Regression')
+plt.grid(True)
+plt.show()
+
+print("✓ Task 3 Complete: Data visualization created")
+print("✓ Task 4 Complete: Grid added to the plot")
+
+print("\n✓✓✓ All Tasks Complete! Data generation complete!") 

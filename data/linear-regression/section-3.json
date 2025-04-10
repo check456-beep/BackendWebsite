@@ -2,45 +2,213 @@
   "id": "section-3",
   "title": "Evaluating Regression Models",
   "content": "After building regression models, it's important to evaluate their performance. Common metrics for regression include Mean Squared Error (MSE), Root Mean Squared Error (RMSE), and R-squared. We'll compare different regression models and visualize their performance.",
-  "code": "import numpy as np\nimport matplotlib.pyplot as plt\nfrom sklearn.preprocessing import PolynomialFeatures\nfrom sklearn.linear_model import LinearRegression, Ridge, Lasso\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.metrics import mean_squared_error, r2_score\nfrom sklearn.model_selection import train_test_split\n\n# Generate sample data with noise\nnp.random.seed(42)\nX = 6 * np.random.rand(200, 1) - 3\ny = 0.8 * X**2 + 0.5 * X + 2 + np.random.randn(200, 1) * 1.5\n\n# Split data into training and testing sets\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)\n\n# Define degrees to test\ndegrees = [1, 2, 3, 5, 10]\n\n# Create a figure for plotting results\nplt.figure(figsize=(14, 10))\n\n# Plot training data\nplt.subplot(2, 1, 1)\nplt.scatter(X_train, y_train, alpha=0.4, label='Training data')\nplt.scatter(X_test, y_test, alpha=0.4, label='Testing data', color='orange')\nplt.title('Polynomial Regression Model Comparison')\nplt.ylabel('y')\nplt.legend()\nplt.grid(True, alpha=0.3)\n\n# Compare models\nX_plot = np.linspace(-3, 3, 200).reshape(-1, 1)\nresults = []\n\nfor degree in degrees:\n    # Create a polynomial regression model\n    model = make_pipeline(\n        PolynomialFeatures(degree=degree),\n        LinearRegression()\n    )\n    \n    # Train the model\n    model.fit(X_train, y_train)\n    \n    # Make predictions\n    y_train_pred = model.predict(X_train)\n    y_test_pred = model.predict(X_test)\n    y_plot_pred = model.predict(X_plot)\n    \n    # Calculate metrics\n    train_mse = mean_squared_error(y_train, y_train_pred)\n    test_mse = mean_squared_error(y_test, y_test_pred)\n    train_r2 = r2_score(y_train, y_train_pred)\n    test_r2 = r2_score(y_test, y_test_pred)\n    \n    # Store results\n    results.append({\n        'degree': degree,\n        'train_mse': train_mse,\n        'test_mse': test_mse,\n        'train_r2': train_r2,\n        'test_r2': test_r2\n    })\n    \n    # Plot the model predictions\n    plt.plot(X_plot, y_plot_pred, label=f'Degree {degree}')\n\nplt.legend()\n\n# Plot evaluation metrics\nplt.subplot(2, 1, 2)\ndegrees_arr = np.array([r['degree'] for r in results])\ntrain_mse = np.array([r['train_mse'] for r in results])\ntest_mse = np.array([r['test_mse'] for r in results])\ntrain_r2 = np.array([r['train_r2'] for r in results])\ntest_r2 = np.array([r['test_r2'] for r in results])\n\n# Create bar chart for MSE\nplt.bar(degrees_arr - 0.2, train_mse, width=0.4, label='Train MSE', alpha=0.6)\nplt.bar(degrees_arr + 0.2, test_mse, width=0.4, label='Test MSE', alpha=0.6)\nplt.xlabel('Polynomial Degree')\nplt.ylabel('Mean Squared Error')\nplt.title('Model Performance vs Polynomial Degree')\nplt.xticks(degrees_arr)\nplt.legend()\nplt.grid(True, alpha=0.3)\n\nplt.tight_layout()\nplt.show()\n\n# Print evaluation results\nprint(\"\\nModel Evaluation Results:\")\nprint(\"-\" * 70)\nprint(f\"{'Degree':<10}{'Train MSE':<15}{'Test MSE':<15}{'Train R²':<15}{'Test R²':<15}\")\nprint(\"-\" * 70)\nfor r in results:\n    print(f\"{r['degree']:<10}{r['train_mse']:<15.4f}{r['test_mse']:<15.4f}{r['train_r2']:<15.4f}{r['test_r2']:<15.4f}\")\n\nprint(\"\\nModel evaluation complete!\")",
+  "code": "# Evaluating Regression Models\n# ===========================\n\n\"\"\"\nIn this section, you'll learn how to evaluate regression models using different metrics\nand compare their performance. Follow the instructions below to build your understanding step by step.\n\"\"\"\n\n# STEP 1: Import necessary libraries\n\"\"\"\nImport the required libraries:\n- numpy for numerical operations\n- matplotlib.pyplot for visualization\n- PolynomialFeatures, LinearRegression, Ridge, Lasso from sklearn\n- make_pipeline, train_test_split, mean_squared_error, r2_score from sklearn\n\"\"\"\n\n# Your code here\n\n\n# STEP 2: Generate sample data with noise\n\"\"\"\nGenerate non-linear data with noise:\n- Set a random seed (42) for reproducibility\n- Generate 200 random X values between -3 and 3\n- Create y values using the formula: y = 0.8 * X^2 + 0.5 * X + 2 + random noise\n\"\"\"\n\n# Your code here\n\n\n# STEP 3: Split data into training and testing sets\n\"\"\"\nSplit the data into training and testing sets:\n- Use train_test_split with test_size=0.3 and random_state=42\n- Store the result in X_train, X_test, y_train, y_test\n\"\"\"\n\n# Your code here\n\n\n# STEP 4: Set up the comparison experiment\n\"\"\"\nSet up the experiment to compare different polynomial degrees:\n- Create a list of degrees to test [1, 2, 3, 5, 10]\n- Create a figure for plotting (14, 10)\n- Set up a subplot for the data and models\n\"\"\"\n\n# Your code here\n\n\n# STEP 5: Plot the training and testing data\n\"\"\"\nVisualize the training and testing data:\n- Create a scatter plot of training data (X_train, y_train) in one color\n- Create a scatter plot of testing data (X_test, y_test) in another color (orange)\n- Add a title, label, legend, and grid to the plot\n\"\"\"\n\n# Your code here\n\n\n# STEP 6: Create and evaluate models of different degrees\n\"\"\"\nCompare models of different polynomial degrees:\n- Create a list to store results\n- Generate X values for plotting (np.linspace)\n- For each degree:\n  - Create a polynomial regression model with make_pipeline\n  - Train the model on training data\n  - Make predictions on training and testing data\n  - Calculate metrics (MSE, R²) for both training and testing sets\n  - Store the results\n  - Plot the model predictions\n\"\"\"\n\n# Your code here\n\n\n# STEP 7: Visualize evaluation metrics\n\"\"\"\nCreate a visualization of metrics:\n- Set up a subplot for metrics visualization\n- Extract metrics from results (degree, train_mse, test_mse, etc.)\n- Create a bar chart comparing train and test MSE\n- Add labels, title, and a legend\n\"\"\"\n\n# Your code here\n\n\n# STEP 8: Print evaluation results in a table\n\"\"\"\nPrint the evaluation results in a formatted table:\n- Display a header with column names\n- Loop through results and print each row nicely formatted\n\"\"\"\n\n# Your code here\n\n\nprint(\"\\nModel evaluation complete!\")",
   "tasks": [
     {
       "id": "task-1",
-      "description": "Run the code to evaluate polynomial regression models of different degrees",
-      "hint": "Click the 'Run Code' button to execute the provided code",
-      "validation": "Model evaluation complete!"
+      "description": "Import the necessary libraries",
+      "hint": "Look at the instructions in STEP 1. You'll need numpy, matplotlib.pyplot, and specific imports from sklearn.",
+      "validation": "import numpy as np\nimport matplotlib.pyplot as plt\nfrom sklearn.preprocessing import PolynomialFeatures\nfrom sklearn.linear_model import LinearRegression"
     },
     {
       "id": "task-2",
-      "description": "Identify which polynomial degree is starting to overfit the data",
-      "hint": "Look at the model with degree 10 and compare its train vs test metrics",
-      "validation": "degree=10"
+      "description": "Generate sample data as described in STEP 2",
+      "hint": "Use np.random.seed(42), np.random.rand(), and implement the non-linear equation with noise",
+      "validation": "np.random.seed(42)\nX = 6 * np.random.rand(200, 1) - 3\ny = 0.8 * X**2 + 0.5 * X + 2 + np.random.randn(200, 1)"
     },
     {
       "id": "task-3",
-      "description": "Modify the code to include a Ridge regression model for one of the degrees",
-      "hint": "Replace LinearRegression() with Ridge(alpha=1.0) for one of the degrees",
+      "description": "Split the data as described in STEP 3",
+      "hint": "Use train_test_split with the specified parameters",
+      "validation": "X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)"
+    },
+    {
+      "id": "task-4",
+      "description": "Implement code to compare and evaluate different polynomial degrees",
+      "hint": "Create degrees list, set up the visualization, and implement the model training and evaluation loop",
+      "validation": "degrees = [1, 2, 3, 5, 10]"
+    },
+    {
+      "id": "task-5",
+      "description": "Add Ridge regression to compare with standard linear regression",
+      "hint": "Add a model using Ridge(alpha=1.0) instead of LinearRegression() for one of the degrees",
       "validation": "Ridge("
+    }
+  ],
+  "tips": [
+    {
+      "id": "tip-1",
+      "position": "after-task-1",
+      "title": "Train-Test Split Importance",
+      "content": "Splitting your data into training and testing sets is critical for evaluating model performance. The training set is used to build the model, while the testing set helps you assess how well the model generalizes to new, unseen data.",
+      "type": "explanation"
+    },
+    {
+      "id": "tip-2",
+      "position": "after-task-3",
+      "title": "The Purpose of Train-Test Split",
+      "content": "Always evaluate your models on data they haven't seen during training. This provides a more realistic measure of how well they will perform on new data in the real world.",
+      "type": "explanation"
+    },
+    {
+      "id": "tip-3",
+      "position": "after-task-4",
+      "title": "Recognizing Overfitting",
+      "content": "When a model performs much better on training data than on testing data, it's likely overfitting. A clear sign of overfitting is when train MSE keeps decreasing while test MSE starts increasing at higher polynomial degrees.",
+      "type": "explanation"
+    },
+    {
+      "id": "tip-4",
+      "position": "after-task-5",
+      "title": "Regularization Techniques",
+      "content": "Ridge regression adds L2 regularization to linear regression, which helps prevent overfitting by penalizing large coefficients. Another common regularization technique is Lasso (L1 regularization), which can also perform feature selection by setting some coefficients to zero.",
+      "type": "concept"
     }
   ],
   "tools": [
     {
+      "name": "numpy",
+      "description": "Fundamental package for scientific computing in Python, providing support for arrays, matrices, and mathematical functions",
+      "syntax": "import numpy as np",
+      "link": "https://numpy.org/doc/stable/"
+    },
+    {
+      "name": "matplotlib.pyplot",
+      "description": "MATLAB-like plotting framework for creating static, animated, and interactive visualizations in Python",
+      "syntax": "import matplotlib.pyplot as plt",
+      "link": "https://matplotlib.org/stable/api/pyplot_summary.html"
+    },
+    {
+      "name": "sklearn",
+      "description": "Machine learning library featuring various classification, regression, and clustering algorithms",
+      "syntax": "import sklearn",
+      "link": "https://scikit-learn.org/stable/"
+    },
+    {
+      "name": "sklearn.preprocessing.PolynomialFeatures",
+      "description": "Generates polynomial and interaction features, transforming linear models into polynomial regression models",
+      "syntax": "PolynomialFeatures(degree=2, interaction_only=False, include_bias=True)",
+      "link": "https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html"
+    },
+    {
+      "name": "sklearn.linear_model.LinearRegression",
+      "description": "Ordinary least squares linear regression model that fits a linear model to minimize the residual sum of squares",
+      "syntax": "LinearRegression(fit_intercept=True, normalize=False, copy_X=True, n_jobs=None)",
+      "link": "https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html"
+    },
+    {
+      "name": "sklearn.linear_model.Ridge",
+      "description": "Linear regression with L2 regularization (penalizes squared magnitudes of coefficients) to prevent overfitting",
+      "syntax": "Ridge(alpha=1.0, fit_intercept=True, normalize=False, copy_X=True, max_iter=None, tol=0.001, solver='auto', random_state=None)",
+      "link": "https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html"
+    },
+    {
+      "name": "sklearn.linear_model.Lasso",
+      "description": "Linear regression with L1 regularization (penalizes absolute values of coefficients) to encourage sparsity",
+      "syntax": "Lasso(alpha=1.0, fit_intercept=True, normalize=False, precompute=False, copy_X=True, max_iter=1000, tol=0.0001, warm_start=False, positive=False, random_state=None, selection='cyclic')",
+      "link": "https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html"
+    },
+    {
       "name": "sklearn.metrics.mean_squared_error",
-      "description": "Computes mean squared error between predicted and actual values",
-      "syntax": "mean_squared_error(y_true, y_pred)",
+      "description": "Computes mean squared error between predicted and actual values, a standard metric for regression problems",
+      "syntax": "mean_squared_error(y_true, y_pred, sample_weight=None, multioutput='uniform_average', squared=True)",
       "link": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.mean_squared_error.html"
     },
     {
       "name": "sklearn.metrics.r2_score",
-      "description": "Computes coefficient of determination (R²) to measure model fit",
-      "syntax": "r2_score(y_true, y_pred)",
+      "description": "Computes coefficient of determination (R²) to measure model fit, indicating the proportion of variance explained by the model",
+      "syntax": "r2_score(y_true, y_pred, sample_weight=None, multioutput='uniform_average')",
       "link": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.r2_score.html"
     },
     {
       "name": "sklearn.model_selection.train_test_split",
-      "description": "Splits arrays into random train and test subsets",
-      "syntax": "train_test_split(*arrays, test_size=0.25, random_state=None)",
+      "description": "Splits arrays into random train and test subsets to evaluate model performance on unseen data",
+      "syntax": "train_test_split(*arrays, test_size=0.25, train_size=None, random_state=None, shuffle=True, stratify=None)",
       "link": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html"
+    },
+    {
+      "name": "sklearn.pipeline.make_pipeline",
+      "description": "Creates a pipeline of sequential transformers and estimators to simplify the workflow of data preprocessing and modeling",
+      "syntax": "make_pipeline(*steps, memory=None, verbose=False)",
+      "link": "https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.make_pipeline.html"
+    },
+    {
+      "name": "np.random.seed",
+      "description": "Sets the seed for numpy's random number generator, ensuring reproducibility of random operations",
+      "syntax": "np.random.seed(seed)",
+      "link": "https://numpy.org/doc/stable/reference/random/generated/numpy.random.seed.html"
+    },
+    {
+      "name": "np.random.rand",
+      "description": "Creates an array of specified shape and fills it with random values uniformly distributed between 0 and 1",
+      "syntax": "np.random.rand(d0, d1, ..., dn)",
+      "link": "https://numpy.org/doc/stable/reference/random/generated/numpy.random.rand.html"
+    },
+    {
+      "name": "np.random.randn",
+      "description": "Creates an array of specified shape and fills it with random values from a standard normal distribution (mean=0, stdev=1)",
+      "syntax": "np.random.randn(d0, d1, ..., dn)",
+      "link": "https://numpy.org/doc/stable/reference/random/generated/numpy.random.randn.html"
+    },
+    {
+      "name": "np.linspace",
+      "description": "Creates evenly spaced numbers over a specified interval with control over the number of points",
+      "syntax": "np.linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0)",
+      "link": "https://numpy.org/doc/stable/reference/generated/numpy.linspace.html"
+    },
+    {
+      "name": "plt.figure",
+      "description": "Creates a new figure or activates an existing figure with specified size and properties",
+      "syntax": "plt.figure(figsize=(width, height))",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.figure.html"
+    },
+    {
+      "name": "plt.subplot",
+      "description": "Creates a subplot in the current figure with a specific grid position",
+      "syntax": "plt.subplot(nrows, ncols, index)",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot.html"
+    },
+    {
+      "name": "plt.scatter",
+      "description": "Creates a scatter plot with (x,y) coordinates, with options for marker size, color, and transparency",
+      "syntax": "plt.scatter(x, y, s=None, c=None, alpha=None)",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.scatter.html"
+    },
+    {
+      "name": "plt.plot",
+      "description": "Plots y versus x as lines and/or markers, used for creating line plots",
+      "syntax": "plt.plot(x, y, 'bo-', linewidth=2, markersize=4)",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.plot.html"
+    },
+    {
+      "name": "plt.bar",
+      "description": "Creates a bar plot with rectangles with heights proportional to the values",
+      "syntax": "plt.bar(x, height, width=0.8, bottom=None, align='center', color=None, alpha=None)",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.bar.html"
+    },
+    {
+      "name": "plt.tight_layout",
+      "description": "Adjusts subplot parameters to give specified padding and prevent overlapping of subplot elements",
+      "syntax": "plt.tight_layout(pad=1.08, h_pad=None, w_pad=None, rect=None)",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html"
+    },
+    {
+      "name": "plt.xticks",
+      "description": "Gets or sets the current tick locations and labels of the x-axis",
+      "syntax": "plt.xticks(ticks=None, labels=None, rotation=None)",
+      "link": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.xticks.html"
+    },
+    {
+      "name": "np.array",
+      "description": "Creates an array from input data, used for converting lists to arrays for numerical operations",
+      "syntax": "np.array(object, dtype=None, copy=True, order='K', subok=False, ndmin=0)",
+      "link": "https://numpy.org/doc/stable/reference/generated/numpy.array.html"
+    },
+    {
+      "name": "f-string",
+      "description": "Python string formatting syntax that allows embedding expressions inside string literals using f prefix",
+      "syntax": "f\"Some text {variable} more text {expression:.4f}\"",
+      "link": "https://docs.python.org/3/reference/lexical_analysis.html#f-strings"
     }
   ]
 } 

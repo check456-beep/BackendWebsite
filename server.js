@@ -20,6 +20,48 @@ const wss = new WebSocket.Server({ server });
 // Store active Python processes
 const activeProcesses = new Map();
 
+// Add proper signal handling for graceful shutdown
+function shutdownGracefully() {
+  console.log('Shutting down gracefully...');
+  
+  // Kill all running Python processes
+  for (const [id, process] of activeProcesses.entries()) {
+    console.log(`Terminating process ${id}`);
+    try {
+      process.kill('SIGTERM');
+    } catch (err) {
+      console.error(`Error terminating process ${id}:`, err);
+    }
+  }
+  
+  // Close the WebSocket server
+  wss.close(() => {
+    console.log('WebSocket server closed');
+    
+    // Close the HTTP server
+    server.close(() => {
+      console.log('HTTP server closed');
+      process.exit(0);
+    });
+  });
+  
+  // Force exit after 5 seconds if graceful shutdown fails
+  setTimeout(() => {
+    console.error('Could not close connections in time, forcefully shutting down');
+    process.exit(1);
+  }, 5000);
+}
+
+// Listen for termination signals
+process.on('SIGTERM', shutdownGracefully);
+process.on('SIGINT', shutdownGracefully);
+
+// Detect uncaught exceptions and exit cleanly
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught exception:', err);
+  shutdownGracefully();
+});
+
 // Middleware
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(cors());
@@ -263,7 +305,8 @@ app.post('/api/execute', (req, res) => {
           ...process.env,
           PYTHONUNBUFFERED: "1",
           PYTHONIOENCODING: "utf-8"
-        }
+        },
+        detached: false // Ensure child process is attached to parent
       }
     );
     

@@ -48,5 +48,5 @@ USER appuser
 # Expose port
 EXPOSE 5000
 
-# Start the application with resource limits
+# Start the application with proper signal handling
 CMD ["node", "--max-old-space-size=512", "server.js"]
