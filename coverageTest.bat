@@ -1,0 +1,9 @@
+@echo off
+echo Building Docker image...
+docker build -t python-tutorial-platform .
+
+echo Running container and generating coverage...
+docker run --rm -v .\coverage:/app/coverage python-tutorial-platform npm run coverage
+
+echo Opening coverage report...
+start "" ".\coverage\index.html"

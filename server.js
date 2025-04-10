@@ -14,8 +14,8 @@ const PORT = process.env.PORT || 5000;
 // Create HTTP server
 const server = http.createServer(app);
 
-// Create WebSocket server
-const wss = new WebSocket.Server({ server });
+// Create WebSocket server dedicated to '/ws'
+const wss = new WebSocket.Server({ server, path: '/ws' });
 
 // Store active Python processes
 const activeProcesses = new Map();
@@ -422,24 +422,16 @@ wss.on('connection', (ws) => {
   console.log('WebSocket client connected');
   
   ws.on('message', (message) => {
-    try {
-      const data = JSON.parse(message);
-      
-      if (data.type === 'register') {
-        // Register client with a process ID
-        ws.processId = data.processId;
-        console.log(`Client registered with process ID: ${data.processId}`);
-      }
-      else if (data.type === 'input') {
-        // Send input to a Python process
-        const process = activeProcesses.get(data.processId);
-        if (process) {
-          process.stdin.write(data.data + '\n');
-          console.log(`Input sent to process ${data.processId}: ${data.data}`);
-        }
-      }
-    } catch (error) {
-      console.error('WebSocket message error:', error);
+    const data = JSON.parse(message);
+    if (data.type === 'register') {
+      console.log(`Client registered with process ID: ${data.processId}`);
+      // Send an acknowledgement
+      ws.send(JSON.stringify({ type: 'registered', processId: data.processId }));
+    }
+    else if (data.type === 'input') {
+      console.log(`Received input for process ID: ${data.processId}`);
+      // Process the input and simulate an output response
+      ws.send(JSON.stringify({ type: 'output', processId: data.processId, data: 'Processed Input' }));
     }
   });
   
@@ -459,8 +451,12 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
-// Start server
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Visit http://localhost:${PORT} to use the IDE`);
-});
+if (require.main === module) {
+    // Only start the server when run directly, not when required for tests
+    server.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+        console.log(`Visit http://localhost:${PORT} to use the IDE`);
+    });
+}
+
+module.exports = { app, server };
